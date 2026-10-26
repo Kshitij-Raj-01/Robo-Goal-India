@@ -1,19 +1,20 @@
 import { gsap } from "gsap";
 import { INTRO_TIMING } from "../intro-config";
 
-/** Drop the velvet curtain, illuminate the title, then part it over the homepage. */
+/** White/orange fabric, supplied logo, football-O portal, then homepage reveal. */
 export function addCurtainReveal(
   host: HTMLDivElement,
   timeline: gsap.core.Timeline,
 ) {
   const intro = host.parentElement!;
   const curtain = intro.querySelector<HTMLElement>(".intro-curtain")!;
-  const title = intro.querySelector<HTMLElement>(".curtain-title")!;
-  const letters = title.querySelectorAll(".curtain-letter");
+  const brand = intro.querySelector<HTMLElement>(".curtain-brand")!;
+  const mouth = intro.querySelector<HTMLElement>(".curtain-portal-mouth")!;
   const left = curtain.querySelector<HTMLElement>(".curtain-panel-left")!;
   const right = curtain.querySelector<HTMLElement>(".curtain-panel-right")!;
   gsap.set(curtain, { yPercent: -105, visibility: "visible" });
-  gsap.set(letters, { opacity: 0, y: 35, rotateX: -70, scale: 0.92 });
+  gsap.set(brand, { opacity: 0, y: 25, scale: 0.92 });
+  gsap.set(mouth, { opacity: 0, scale: 0.7 });
   timeline
     .call(
       () => {
@@ -27,32 +28,34 @@ export function addCurtainReveal(
       { yPercent: 0, duration: 0.65, ease: "power3.inOut" },
       INTRO_TIMING.curtainDown,
     )
-    .set(host, { visibility: "hidden" }, INTRO_TIMING.title - 0.05)
+    .set(host, { visibility: "hidden" }, INTRO_TIMING.logo - 0.05)
     .call(
       () => {
-        host.dataset.stage = "gold-title";
-        curtain.classList.add("curtain-illuminated");
+        host.dataset.stage = "curtain-logo";
       },
       [],
-      INTRO_TIMING.title,
+      INTRO_TIMING.logo,
     )
     .to(
-      letters,
+      brand,
       {
         opacity: 1,
         y: 0,
-        rotateX: 0,
         scale: 1,
         duration: 0.65,
-        stagger: 0.035,
         ease: "back.out(1.25)",
       },
-      INTRO_TIMING.title,
+      INTRO_TIMING.logo,
     )
     .to(
-      title,
-      { opacity: 0, scale: 1.04, duration: 0.25, ease: "power2.in" },
-      INTRO_TIMING.titleOut,
+      mouth,
+      { opacity: 1, scale: 1, duration: 0.35, ease: "power2.out" },
+      INTRO_TIMING.portal,
+    )
+    .to(
+      brand,
+      { opacity: 0, duration: 0.35, ease: "power2.in" },
+      INTRO_TIMING.logoOut,
     )
     .call(
       () => {

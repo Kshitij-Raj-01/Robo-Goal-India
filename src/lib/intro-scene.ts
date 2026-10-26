@@ -12,6 +12,8 @@ import { createGoalCelebration } from "./cinematic/celebration";
 import { createComponentCloud } from "./cinematic/component-cloud";
 import { addCurtainReveal } from "./cinematic/curtain";
 import { INTRO_TIMING } from "./intro-config";
+import { createCrowd } from "./cinematic/crowd";
+import { createLogoPortal } from "./cinematic/logo-portal";
 
 export function startScene(host: HTMLDivElement, onComplete?: () => void) {
   const scene = new T.Scene();
@@ -31,6 +33,7 @@ export function startScene(host: HTMLDivElement, onComplete?: () => void) {
   camera.updateProjectionMatrix();
   camera.lookAt(cameraTarget);
   const renderer = new T.WebGLRenderer({
+    alpha: true,
     antialias: true,
     powerPreference: "high-performance",
   });
@@ -194,6 +197,7 @@ export function startScene(host: HTMLDivElement, onComplete?: () => void) {
   ball.position.set(0, 0.43, 0.5);
   scene.add(ball);
   const goalTime = INTRO_TIMING.goal;
+  const crowd = createCrowd(scene, goalTime);
   const celebration = createGoalCelebration(scene, goalTime);
   const netRest = new Float32Array(netGeometry.attributes.position.array);
   const timeline = gsap.timeline({ paused: true, onComplete });
@@ -296,15 +300,24 @@ export function startScene(host: HTMLDivElement, onComplete?: () => void) {
     INTRO_TIMING.closeups,
   );
   addCurtainReveal(host, timeline);
+  const portal = createLogoPortal(host, renderer, robotData, timeline);
+  portal.scene.environment = scene.environment;
+  portal.scene.environmentIntensity = 0.8;
+  portal.prepare();
   // Prewarm shaders before the first visible motion frame.
   renderer.compile(scene, camera);
   let frame = 0;
   const render = () => {
     frame = requestAnimationFrame(render);
     if (!document.hidden) {
+      if (portal.active) {
+        portal.render();
+        return;
+      }
       camera.lookAt(cameraTarget);
       atmosphere.update(timeline.time());
       celebration.update(timeline.time());
+      crowd.update(timeline.time());
       const age = timeline.time() - goalTime;
       if (age >= 0 && age < 1.3) {
         const positions = netGeometry.attributes.position;
@@ -333,6 +346,7 @@ export function startScene(host: HTMLDivElement, onComplete?: () => void) {
     camera.updateProjectionMatrix();
     renderer.setSize(host.clientWidth, host.clientHeight);
     composer?.setSize(host.clientWidth, host.clientHeight);
+    if (portal.active) portal.resize();
   };
   window.addEventListener("resize", resize);
   return () => {
@@ -340,6 +354,7 @@ export function startScene(host: HTMLDivElement, onComplete?: () => void) {
     timeline.kill();
     atmosphere.dispose();
     celebration.dispose();
+    crowd.dispose();
     bloom?.dispose();
     output?.dispose();
     renderPass?.dispose();

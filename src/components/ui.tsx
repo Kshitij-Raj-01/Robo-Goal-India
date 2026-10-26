@@ -2,7 +2,8 @@ import Link from "next/link";
 import { ArrowUpRight, ArrowRight, Crosshair } from "lucide-react";
 import type { ReactNode } from "react";
 import Image from "next/image";
-import roboticSirLogo from "../../public/images/robotic-sir-logo.webp";
+import roboticSirLogo from "../../public/images/robotic-sir-logo-dark.webp";
+import roboGoalLogo from "../../public/images/robo-goal-india-logo-dark.webp";
 
 export function OrganizerLogo({ prominent = false }: { prominent?: boolean }) {
   return (
@@ -31,16 +32,12 @@ export function Brand({ small = false }: { small?: boolean }) {
       className={`brand ${small ? "small" : ""}`}
       aria-label="Robo Goal India home"
     >
-      <span className="brand-mark">
-        <span>R</span>
-        <i />
-      </span>
-      <span className="brand-type">
-        ROBO GOAL
-        <span>
-          INDIA <b>◆</b>
-        </span>
-      </span>
+      <Image
+        src={roboGoalLogo}
+        alt="Robo Goal India"
+        className="brand-logo"
+        sizes={small ? "180px" : "(max-width: 700px) 220px, 270px"}
+      />
     </Link>
   );
 }

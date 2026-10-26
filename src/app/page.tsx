@@ -32,14 +32,16 @@ export default function Home() {
     <>
       <Intro />
       <section className="hero">
-        <Image
-          src="/images/robo-goal-event.webp"
-          alt="Real student-built soccer robots with metal scoops, rubber tyres and exposed electronics competing at Robo Goal India"
-          fill
-          preload
-          sizes="100vw"
-          className="hero-image"
-        />
+        <div className="hero-artwork">
+          <Image
+            src="/images/robo-goal-hero-cgi.webp"
+            alt="Realistic CGI illustration inspired by Robo Goal India event photos: two student-built soccer robots with metal scoops, exposed wiring and rubber wheels on a dark floodlit green pitch"
+            fill
+            preload
+            sizes="100vw"
+            className="hero-image"
+          />
+        </div>
         <div className="hero-shade" />
         <div className="hero-grid" />
         <div className="hero-content container">

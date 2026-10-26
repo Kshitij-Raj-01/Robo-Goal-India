@@ -1,6 +1,7 @@
 import * as T from "three";
 import type { gsap } from "gsap";
 import type { createRobot } from "./robot";
+import { createScatterAccessories } from "./scatter-accessories";
 
 /** Camera-space hardware lets the celebration fill both portrait and wide screens. */
 export function createComponentCloud(
@@ -17,23 +18,73 @@ export function createComponentCloud(
   const fill = new T.PointLight(0xe4f3ff, 8, 18, 2);
   fill.position.set(-2, 3, 1);
   camera.add(fill);
-  // The four key components get clear, separate foreground positions.
-  const featuredNames = [/microcontroller/, /tyre/, /Battery/, /MOSFET/];
+  const accessories = createScatterAccessories();
+  const inventory = [
+    ...robot.parts.map((part) => ({ ...part, accessory: false })),
+    ...accessories,
+  ];
+  // Four detailed rendered cutouts plus two genuine mesh assemblies lead the scatter.
+  const featuredNames = [
+    /microcontroller/,
+    /ESP32/,
+    /Battery/,
+    /MOSFET motor/,
+    /tyre/,
+    /DC motor/,
+  ];
   const featured = featuredNames.map((pattern) =>
-    robot.parts.find((part) => pattern.test(part.mesh.name))!,
+    inventory.find((part) => pattern.test(part.mesh.name))!,
   );
   const ordered = [
     ...featured,
-    ...robot.parts.filter((part) => !featured.includes(part)),
+    ...inventory.filter((part) => !featured.includes(part)),
   ];
   const placements = [
-    [-0.48, 0.48],
-    [0.54, 0.4],
-    [-0.5, -0.43],
-    [0.5, -0.47],
+    [-0.5, 0.5],
+    [0.5, 0.5],
+    [-0.58, -0.05],
+    [0.58, -0.05],
+    [-0.4, -0.63],
+    [0.42, -0.63],
   ];
+  const loader = new T.TextureLoader();
+  const art = ["arduino-uno", "esp32", "battery-pack", "motor-driver"];
   const instances = ordered.map((part, index) => {
-    const model = part.mesh.clone(true);
+    let model: T.Object3D = part.mesh.clone(true);
+    const rendered = index < art.length;
+    if (rendered) {
+      const texture = loader.load(`/images/components/${art[index]}.webp`);
+      texture.colorSpace = T.SRGBColorSpace;
+      const plane = new T.Group();
+      const aspect = [1.5, 1.2, 1.5, 720 / 658][index];
+      const geometry = new T.PlaneGeometry(1.5, 1.5 / aspect);
+      const shadow = new T.Mesh(
+        geometry,
+        new T.MeshBasicMaterial({
+          map: texture,
+          color: 0x000000,
+          transparent: true,
+          opacity: 0.3,
+          depthWrite: false,
+          toneMapped: false,
+        }),
+      );
+      shadow.position.set(0.025, -0.04, -0.01);
+      plane.add(
+        shadow,
+        new T.Mesh(
+          geometry,
+          new T.MeshBasicMaterial({
+            map: texture,
+            transparent: true,
+            depthWrite: false,
+            toneMapped: false,
+            side: T.DoubleSide,
+          }),
+        ),
+      );
+      model = plane;
+    }
     model.position.set(0, 0, 0);
     model.rotation.set(0, 0, 0);
     model.updateMatrixWorld(true);
@@ -45,7 +96,7 @@ export function createComponentCloud(
     display.name = part.mesh.name;
     display.add(model);
     cloud.add(display);
-    const hero = index < 4;
+    const hero = index < 6;
     const angle = index * 2.39996;
     const depth = hero ? 3.5 + index * 0.15 : 5.4 + (index % 4) * 0.65;
     const halfHeight =
@@ -58,15 +109,27 @@ export function createComponentCloud(
     const diameter = Math.max(size.x, size.y, size.z);
     const scale =
       Math.min(
-        halfWidth * (hero ? 0.64 : 0.23),
-        halfHeight * (hero ? 0.52 : 0.22),
+        halfWidth * (hero ? 0.8 : 0.21),
+        halfHeight * (hero ? 0.54 : 0.2),
       ) / Math.max(0.08, diameter);
-    const rotation = /tyre/.test(part.mesh.name)
-      ? { x: 0.15, y: -0.35, z: -0.18 }
-      : /microcontroller|MOSFET/.test(part.mesh.name)
-        ? { x: 1.12, y: -0.18, z: index === 0 ? -0.22 : 0.25 }
-        : { x: 0.6, y: 0.5, z: angle * 0.16 };
-    return { part, display, center, target, scale, rotation, hero, index };
+    const rotation = rendered
+      ? { x: -0.06, y: index % 2 ? -0.12 : 0.12, z: index % 2 ? 0.12 : -0.14 }
+      : /tyre/.test(part.mesh.name)
+        ? { x: 0.15, y: -0.35, z: -0.18 }
+        : /microcontroller|MOSFET/.test(part.mesh.name)
+          ? { x: 1.12, y: -0.18, z: index === 0 ? -0.22 : 0.25 }
+          : { x: 0.6, y: 0.5, z: angle * 0.16 };
+    return {
+      part,
+      display,
+      center,
+      target,
+      scale,
+      rotation,
+      hero,
+      index,
+      rendered,
+    };
   });
 
   timeline.call(
@@ -76,9 +139,13 @@ export function createComponentCloud(
       const inverseRotation = camera
         .getWorldQuaternion(new T.Quaternion())
         .invert();
-      instances.forEach(({ part, display, center }) => {
+      instances.forEach(({ part, display, center, rendered }) => {
         display.position.copy(
-          camera.worldToLocal(part.mesh.localToWorld(center.clone())),
+          camera.worldToLocal(
+            part.accessory || rendered
+              ? robot.root.localToWorld(new T.Vector3(0, 0.7, 0))
+              : part.mesh.localToWorld(center.clone()),
+          ),
         );
         display.quaternion.copy(
           inverseRotation

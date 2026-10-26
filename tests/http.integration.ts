@@ -96,12 +96,30 @@ test(
         "gate precedes visible website markup",
       );
       assert.match(homepage, /curtain-panel-left/);
-      assert.match(homepage, /curtain-title/);
+      assert.match(homepage, /curtain-logo/);
+      assert.match(homepage, /curtain-portal-canvas/);
+      assert.match(homepage, /robo-goal-hero-cgi/);
+      assert.match(homepage, /robo-goal-india-logo-dark/);
+      assert.match(homepage, /robotic-sir-logo-dark/);
       assert.match(homepage, /robo-goal-event/);
       assert.equal(
         (await fetch(origin + "/images/robo-goal-event.webp")).status,
         200,
       );
+      for (const asset of [
+        "/images/robo-goal-india-logo.png",
+        "/images/robo-goal-hero-cgi.webp",
+        "/images/robo-goal-india-logo-dark.webp",
+        "/images/robotic-sir-logo-dark.webp",
+        ...["esp32", "arduino-uno", "battery-pack", "motor-driver"].map(
+          (name) => `/images/components/${name}.webp`,
+        ),
+      ]) {
+        assert.equal((await fetch(origin + asset)).status, 200, asset);
+      }
+      const contactPage = await (await fetch(origin + "/contact")).text();
+      assert.match(contactPage, /robo-goal-india-logo-dark/);
+      assert.match(contactPage, /robotic-sir-logo-dark/);
       assert.equal((await fetch(origin + "/events/not-published")).status, 404);
       assert.equal((await fetch(origin + "/api/admin/requests")).status, 401);
       const id = randomUUID();

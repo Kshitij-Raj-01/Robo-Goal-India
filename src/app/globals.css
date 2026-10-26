@@ -276,6 +276,15 @@ svg {
   align-items: center;
   flex-shrink: 0;
 }
+.brand-logo {
+  display: block;
+  width: 270px;
+  height: auto;
+  filter: drop-shadow(0 2px 8px #0006);
+}
+.brand.small .brand-logo {
+  width: 180px;
+}
 .brand-mark {
   position: relative;
   width: 43px;
@@ -421,9 +430,27 @@ svg {
   min-height: 720px;
   overflow: hidden;
 }
+.hero-artwork {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
 .hero-image {
   object-fit: cover;
-  object-position: 60% center;
+  object-position: 76% center;
+  transform-origin: 76% 55%;
+  animation: hero-camera-drift 5s ease-out both;
+}
+html[data-intro="pending"] .hero-image {
+  animation-play-state: paused;
+}
+@keyframes hero-camera-drift {
+  from {
+    transform: scale(1.045);
+  }
+  to {
+    transform: scale(1);
+  }
 }
 .hero-shade {
   position: absolute;
@@ -1584,20 +1611,20 @@ html[data-intro] body {
   bottom: -4px;
   width: 50.5%;
   background:
-    linear-gradient(180deg, #09020666, transparent 20%, #08020466 100%),
+    linear-gradient(180deg, #ffffff88, transparent 30%, #e4a46b44 100%),
     repeating-linear-gradient(
       90deg,
-      #24070d 0%,
-      #53121d 4%,
-      #7a2030 8%,
-      #48101b 12%,
-      #140308 17%,
-      #390b14 21%
+      #fdf9f2 0%,
+      #fffdf9 4%,
+      #ffe5cb 8%,
+      #ffce9e 12%,
+      #e4ac7c 17%,
+      #fff3e5 21%
     );
-  border-bottom: 5px solid #b28b46;
+  border-bottom: 5px solid #f49342;
   box-shadow:
-    0 22px 35px #000a,
-    inset -18px 0 30px #0007;
+    0 22px 35px #6b3c2a44,
+    inset -18px 0 30px #b56d3a22;
   will-change: transform;
 }
 .curtain-panel-left {
@@ -1618,53 +1645,52 @@ html[data-intro] body {
   );
   opacity: 0.45;
 }
-.curtain-title {
+.curtain-brand {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 92%;
-  text-align: center;
-  font-family: var(--heading);
-  font-weight: 800;
-  font-size: clamp(54px, 9vw, 138px);
-  line-height: 1.05;
-  letter-spacing: 0.08em;
-  filter: drop-shadow(0 6px 2px #100204) drop-shadow(0 0 25px #f4c05736);
-}
-.curtain-title-line:last-child {
-  font-size: 1.3em;
-  letter-spacing: 0.2em;
-  padding-left: 0.2em;
-}
-.curtain-letter {
-  display: inline-block;
+  inset: 0;
+  display: grid;
+  place-items: center;
   opacity: 0;
-  color: #e1b55d;
-  background: linear-gradient(
-    110deg,
-    #936320 0%,
-    #e9bf63 24%,
-    #fff3bf 38%,
-    #bc8730 52%,
-    #fff0a9 65%,
-    #bb8731 82%,
-    #e9bf63 100%
+  filter: drop-shadow(0 12px 24px #9b5e291f);
+}
+.curtain-logo-stage {
+  position: relative;
+  width: min(1120px, 94%);
+}
+.curtain-logo {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.curtain-portal-mouth {
+  position: absolute;
+  left: 56.5642%;
+  top: 53.1532%;
+  width: 6.704%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  background: radial-gradient(
+    circle at 50% 50%,
+    #020710,
+    #192e3d 70%,
+    #f79337 96%
   );
-  background-size: 240% 100%;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  box-shadow:
+    0 0 0 3px #ffad63,
+    0 0 30px #fa9a4c99;
 }
-.curtain-illuminated .curtain-letter {
-  animation: curtain-gold-shine 1.4s ease-in-out both;
+.curtain-portal-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
 }
-@keyframes curtain-gold-shine {
-  from {
-    background-position: 100% 50%;
-  }
-  to {
-    background-position: 0% 50%;
-  }
+.curtain-portal-canvas canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 @keyframes intro-escape {
   to {
@@ -3160,9 +3186,8 @@ textarea {
 }
 .organizer-logo-plate {
   display: block;
-  background: #fff;
-  border-radius: 4px;
-  padding: 7px 10px;
+  background: transparent;
+  padding: 0;
 }
 .organizer-logo img {
   width: 100%;
@@ -3175,7 +3200,7 @@ textarea {
   z-index: 1;
 }
 .organizer-logo-prominent .organizer-logo-plate {
-  padding: 22px;
+  padding: 0;
 }
 .organizer-logo-prominent > span:first-child {
   font-size: 18px;
@@ -3449,6 +3474,9 @@ td {
     grid-column: 1;
     grid-row: 1;
   }
+  .brand-logo {
+    width: min(220px, 100%);
+  }
   .nav-top .menu-toggle {
     grid-column: 2;
     grid-row: 1;
@@ -3470,7 +3498,7 @@ td {
   }
   .nav-top .organizer-logo-plate {
     width: 145px;
-    padding: 7px;
+    padding: 0;
   }
   .hero {
     min-height: 0;
@@ -3481,6 +3509,24 @@ td {
   }
   .hero .eyebrow {
     letter-spacing: 0.035em;
+  }
+  .hero-artwork {
+    inset: 125px 0 auto;
+    height: 330px;
+  }
+  .hero-image {
+    object-position: right center;
+  }
+  .hero-shade {
+    background: linear-gradient(
+      180deg,
+      #070d1800 270px,
+      #070d1833 340px,
+      #070d18 455px
+    );
+  }
+  .hero-content {
+    padding-top: 455px;
   }
   .hero-content > p {
     max-width: 100%;

@@ -78,21 +78,34 @@ export function Intro() {
         href="/images/intro-poster.webp"
         fetchPriority="high"
       />
+      {["esp32", "arduino-uno", "battery-pack", "motor-driver"].map((name) => (
+        <link
+          key={name}
+          rel="preload"
+          as="image"
+          href={`/images/components/${name}.webp`}
+        />
+      ))}
+      <link rel="preload" as="image" href="/images/robo-goal-india-logo.png" />
       <div className="intro-standby" />
       <div className="intro-canvas" ref={host} />
+      <div className="curtain-portal-canvas" />
       <div className="intro-curtain">
         <div className="curtain-panel curtain-panel-left" />
         <div className="curtain-panel curtain-panel-right" />
-        <div className="curtain-title">
-          {["ROBO GOAL", "INDIA"].map((line) => (
-            <div className="curtain-title-line" key={line}>
-              {[...line].map((letter, index) => (
-                <span className="curtain-letter" key={index}>
-                  {letter === " " ? "\u00a0" : letter}
-                </span>
-              ))}
-            </div>
-          ))}
+        <div className="curtain-brand">
+          <div className="curtain-logo-stage">
+            {/* Exact supplied artwork; never regenerated or redrawn. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              className="curtain-logo"
+              src="/images/robo-goal-india-logo.png"
+              alt="Robo Goal India"
+              width={716}
+              height={111}
+            />
+            <div className="curtain-portal-mouth" />
+          </div>
         </div>
       </div>
       <noscript>

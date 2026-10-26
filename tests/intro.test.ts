@@ -6,6 +6,7 @@ import {
   INTRO_CRITICAL_CSS,
   INTRO_PLAYBACK_TIMEOUT_MS,
   INTRO_TIMING,
+  INTRO_LOGO_PORTAL,
 } from "../src/lib/intro-config";
 
 function boot(pathname = "/", reducedMotion = false) {
@@ -47,11 +48,19 @@ test("the head failsafe never interrupts the curtain reveal", () => {
   assert.equal(dataset.intro, "revealing");
 });
 
-test("goal, scatter, gold title and curtain reveal run in order before timeout", () => {
+test("goal, scatter, supplied logo, emerging bot and curtain reveal run in order", () => {
   const timings = Object.values(INTRO_TIMING);
   assert.ok(
     timings.every((time, index) => !index || time > timings[index - 1]),
   );
-  assert.ok(INTRO_TIMING.title > INTRO_TIMING.curtainDown + 0.65);
+  assert.ok(INTRO_TIMING.logo > INTRO_TIMING.curtainDown + 0.65);
+  assert.ok(INTRO_TIMING.botEmerge > INTRO_TIMING.portal);
+  assert.ok(INTRO_TIMING.logoOut > INTRO_TIMING.botEmerge + 1);
   assert.ok(INTRO_TIMING.end * 1000 < INTRO_PLAYBACK_TIMEOUT_MS);
+});
+
+test("the bot portal is anchored to the football O in the supplied logo", () => {
+  assert.equal(INTRO_LOGO_PORTAL.x, 405 / 716);
+  assert.equal(INTRO_LOGO_PORTAL.y, 59 / 111);
+  assert.ok(INTRO_LOGO_PORTAL.radius > 0.03 && INTRO_LOGO_PORTAL.radius < 0.04);
 });
