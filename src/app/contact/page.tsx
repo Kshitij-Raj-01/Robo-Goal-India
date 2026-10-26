@@ -27,16 +27,25 @@ export default function Contact() {
           <h2>GET IN TOUCH.</h2>
           <p>{site.organizer}</p>
           <div className="contact-details">
+            {site.addresses.map((address, index) => (
+              <div className="contact-detail" key={address}>
+                <span className="micro">
+                  {index === 0 ? "DELHI / HEAD OFFICE" : "NOIDA CENTRE"}
+                </span>
+                <p>{address.replace(/^(Delhi|Noida): /, "")}</p>
+              </div>
+            ))}
+            <div className="contact-detail">
+              <span className="micro">PHONE</span>
+              {site.phones.map((phone) => (
+                <p key={phone.number}>
+                  <a href={`tel:${phone.number}`}>
+                    {phone.label}: {phone.number}
+                  </a>
+                </p>
+              ))}
+            </div>
             {[
-              [
-                "OFFICE",
-                site.addresses.join(" · ") ||
-                  "Official office address — to be announced",
-              ],
-              [
-                "PHONE",
-                site.phone || "Official Contact Number — to be announced",
-              ],
               ["EMAIL", site.email || "Official email — to be announced"],
               [
                 "BUSINESS HOURS",
@@ -46,9 +55,7 @@ export default function Contact() {
               <div className="contact-detail" key={l}>
                 <span className="micro">{l}</span>
                 <p>
-                  {l === "PHONE" && site.phone ? (
-                    <a href={`tel:${site.phone}`}>{v}</a>
-                  ) : l === "EMAIL" && site.email ? (
+                  {l === "EMAIL" && site.email ? (
                     <a href={`mailto:${site.email}`}>{v}</a>
                   ) : (
                     v

@@ -8,12 +8,9 @@ import { createAtmosphere } from "./cinematic/atmosphere";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { createRobot } from "./cinematic/robot";
 import { createFootball } from "./cinematic/football";
+import { createCollision } from "./cinematic/collision";
 
-export function startScene(
-  host: HTMLDivElement,
-  onPhase?: (phase: string) => void,
-  onComplete?: () => void,
-) {
+export function startScene(host: HTMLDivElement, onComplete?: () => void) {
   const scene = new T.Scene();
   scene.background = new T.Color(0x030910);
   scene.fog = new T.FogExp2(0x06101b, 0.045);
@@ -23,9 +20,11 @@ export function startScene(
     0.05,
     80,
   );
-  // A ground-level tracking shot opens into an overhead engineering orbit.
-  const cameraTarget = new T.Vector3(2.6, 0.48, 0);
-  camera.position.set(-3.8, 0.85, 5.2);
+  // Track both subjects, then pull back as the collision scatters the hardware.
+  const cameraTarget = new T.Vector3(0, 0.55, 0);
+  camera.position.set(-3.8, 2.25, 6.4);
+  camera.zoom = Math.min(1, Math.max(0.5, camera.aspect / 1.35));
+  camera.updateProjectionMatrix();
   camera.lookAt(cameraTarget);
   const renderer = new T.WebGLRenderer({
     antialias: true,
@@ -34,28 +33,28 @@ export function startScene(
   renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
   renderer.setSize(host.clientWidth, host.clientHeight);
   renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = T.PCFSoftShadowMap;
+  renderer.shadowMap.type = T.PCFShadowMap;
   renderer.toneMapping = T.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.25;
+  renderer.toneMappingExposure = 0.95;
   host.appendChild(renderer.domElement);
   const pmrem = new T.PMREMGenerator(renderer);
   const room = new RoomEnvironment();
   const env = pmrem.fromScene(room, 0.04);
   scene.environment = env.texture;
-  scene.environmentIntensity = 0.38;
+  scene.environmentIntensity = 0.65;
   room.dispose();
   pmrem.dispose();
   scene.add(new T.HemisphereLight(0x8eadd1, 0x07170f, 0.6));
-  const key = new T.SpotLight(0xffecd9, 0, 35, Math.PI / 5, 0.65, 1.2);
+  const key = new T.SpotLight(0xffecd9, 80, 35, Math.PI / 5, 0.65, 1.2);
   key.position.set(-3, 7, 4);
   key.castShadow = true;
   key.shadow.mapSize.set(1024, 1024);
   key.shadow.bias = -0.0004;
   scene.add(key);
-  const rim = new T.PointLight(0x25baff, 0, 25, 1.5);
+  const rim = new T.PointLight(0x25baff, 45, 25, 1.5);
   rim.position.set(3, 4, -3);
   scene.add(rim);
-  const warm = new T.PointLight(0xff510a, 0, 20, 1.5);
+  const warm = new T.PointLight(0xff510a, 25, 20, 1.5);
   warm.position.set(-4, 2, -2);
   scene.add(warm);
   const turf = document.createElement("canvas");
@@ -181,175 +180,137 @@ export function startScene(
     composer.addPass(bloom);
     composer.addPass(output);
   }
-  const { root: robot, parts, wheels, kicker } = createRobot();
+  const { root: robot, parts, wheels } = createRobot();
   scene.add(robot);
   const ball = createFootball();
-  ball.position.set(-2, 0.37, 0.1);
-  ball.visible = false;
+  ball.scale.setScalar(1.3);
+  ball.position.set(-3.3, 0.49, 0);
   scene.add(ball);
-  robot.position.x = 9;
-  const timeline = gsap.timeline({ onComplete });
-  const kick = { progress: 0 };
-  const kickStart = ball.position.clone();
-  const kickEnd = new T.Vector3(-4.75, 1.62, 4.35);
+  robot.position.x = 3.4;
+  const collision = createCollision(scene, new T.Vector3(-1.02, 0.48, 0));
+  host.dataset.stage = "approach";
+  const timeline = gsap.timeline({ paused: true, onComplete });
   timeline
-    .call(() => onPhase?.("01 / ENTER THE ARENA"), [], 0)
-    .to(key, { intensity: 150, duration: 0.28 }, 0.08)
-    .to(rim, { intensity: 120, duration: 0.35 }, 0.2)
-    .to(warm, { intensity: 65, duration: 0.35 }, 0.32)
-    .to(robot.position, { x: 0, duration: 0.86, ease: "power3.out" }, 0.22)
-    .to(
-      cameraTarget,
-      { x: 0, y: 0.7, duration: 0.85, ease: "power2.out" },
-      0.22,
-    )
+    .to(robot.position, { x: 0.65, duration: 0.84, ease: "power1.in" }, 0)
+    .to(ball.position, { x: -1.22, duration: 0.84, ease: "power1.in" }, 0)
+    .to(ball.rotation, { z: -4.3, duration: 0.84, ease: "power1.in" }, 0)
     .to(
       camera.position,
-      { x: -4.3, y: 1.15, z: 4.6, duration: 0.85, ease: "sine.inOut" },
-      0.22,
-    )
-    .to(
-      robot.rotation,
-      { z: -0.065, duration: 0.13, yoyo: true, repeat: 1 },
-      0.88,
-    );
-  wheels.forEach((w) =>
-    timeline.to(
-      w.rotation,
-      { z: -Math.PI * 8, duration: 0.86, ease: "power3.out" },
-      0.22,
-    ),
-  );
-  timeline
-    .call(() => onPhase?.("02 / EVERY COMPONENT. ONE PURPOSE."), [], 1.18)
-    .to(
-      camera.position,
-      { x: -3.1, y: 3.6, z: 6.1, duration: 1.3, ease: "sine.inOut" },
-      1.12,
-    )
-    .to(cameraTarget, { y: 1.45, duration: 0.7, ease: "sine.inOut" }, 1.2);
-  parts.forEach((p, i) => {
-    const angle = i * 2.399;
-    const start = 1.2 + i * 0.005;
-    const apex = new T.Vector3(
-      Math.cos(angle) * (1.65 + (i % 3) * 0.22),
-      1.3 + (i % 5) * 0.32,
-      Math.sin(angle) * 1.5,
-    );
-    // Heavy assemblies travel less; cables remain grouped rather than exploding into fragments.
-    const heavy = /chassis|deck|Battery/.test(p.mesh.name);
-    if (heavy) {
-      apex.x *= 0.55;
-      apex.z *= 0.55;
-      apex.y *= 0.8;
-    }
-    timeline
-      .to(
-        p.mesh.position,
-        { x: apex.x, z: apex.z, duration: 0.68, ease: "power2.out" },
-        start,
-      )
-      .to(
-        p.mesh.position,
-        { y: apex.y, duration: 0.5, ease: "power2.out" },
-        start,
-      )
-      .to(
-        p.mesh.position,
-        { y: apex.y - 0.23, duration: 0.5, ease: "power2.in" },
-        start + 0.5,
-      )
-      .to(
-        p.mesh.rotation,
-        {
-          x: heavy ? 0.15 : 0.4 + (i % 3) * 0.4,
-          y: heavy ? -0.15 : angle * 0.12,
-          z: p.rotation.z + (heavy ? 0.06 : 0.5),
-          duration: 0.8,
-          ease: "power2.out",
-        },
-        start,
-      )
-      .to(
-        p.mesh.position,
-        {
-          x: p.target.x,
-          y: p.target.y,
-          z: p.target.z,
-          duration: 0.62,
-          ease: "power3.inOut",
-        },
-        2.48 + i * 0.009,
-      )
-      .to(
-        p.mesh.rotation,
-        {
-          x: p.rotation.x,
-          y: p.rotation.y,
-          z: p.rotation.z,
-          duration: 0.62,
-          ease: "power3.inOut",
-        },
-        2.48 + i * 0.009,
-      );
-  });
-  timeline
-    .to(
-      camera.position,
-      { x: -4.8, y: 1.65, z: 4.4, duration: 1.05, ease: "sine.inOut" },
-      2.65,
-    )
-    .to(
-      cameraTarget,
-      { x: -0.55, y: 0.57, z: 0, duration: 0.9, ease: "sine.inOut" },
-      2.75,
-    )
-    .call(() => onPhase?.("03 / BUILT TO COMPETE"), [], 3.35)
-    .to(
-      kicker.scale,
-      { x: 1, y: 1, z: 1, duration: 0.25, ease: "power2.out" },
-      3.27,
+      { x: -3.1, y: 1.6, z: 5.9, duration: 0.84, ease: "sine.inOut" },
+      0,
     )
     .call(
       () => {
-        ball.visible = true;
+        host.dataset.stage = "impact";
       },
       [],
-      3.4,
+      0.84,
     )
-    .fromTo(
+    .to(
       ball.position,
-      { x: -2.55 },
-      { x: -2, duration: 0.4, ease: "power2.out" },
-      3.4,
+      { x: -2.7, y: 1.2, z: 1.1, duration: 0.5, ease: "power2.out" },
+      0.84,
     )
-    .to(ball.rotation, { z: -1.5, duration: 0.4, ease: "power2.out" }, 3.4)
-    .to(robot.position, { x: -0.38, duration: 0.36, ease: "power2.in" }, 3.68)
-    .to(kicker.position, { x: -0.74, duration: 0.16, ease: "power2.in" }, 3.78)
-    .to(kicker.position, { x: -1.2, duration: 0.09, ease: "power3.in" }, 4.04)
-    .to(robot.position, { x: -0.29, duration: 0.18, ease: "power2.out" }, 4.13)
     .to(
-      robot.rotation,
-      { z: 0.035, duration: 0.08, yoyo: true, repeat: 1 },
-      4.13,
+      ball.position,
+      { x: -3.8, y: 0.49, z: 1.8, duration: 0.85, ease: "power2.in" },
+      1.34,
     )
-    .call(() => onPhase?.("04 / THE FUTURE IS IN PLAY"), [], 4.15)
     .to(
-      kick,
+      ball.rotation,
+      { z: -12, x: 2.5, duration: 1.5, ease: "power1.out" },
+      0.84,
+    )
+    .to(
+      camera.position,
+      { x: -2.65, y: 3.4, z: 7.5, duration: 1.65, ease: "power2.out" },
+      0.86,
+    )
+    .to(
+      cameraTarget,
+      { x: 0.5, y: 0.55, z: 0, duration: 1.5, ease: "sine.out" },
+      0.86,
+    )
+    .call(
+      () => {
+        host.dataset.stage = "debris";
+      },
+      [],
+      1.05,
+    );
+
+  wheels.forEach((wheel) => {
+    timeline.to(
+      wheel.rotation,
+      { z: Math.PI * 6, duration: 0.84, ease: "power1.in" },
+      0,
+    );
+  });
+
+  // Independent ballistic paths: the impact tears the bot apart; it never reassembles.
+  // Mass and contact height give heavy chassis pieces less travel than loose hardware.
+  parts.forEach((part, index) => {
+    const angle = index * 2.39996;
+    const heavy = /chassis|deck|Battery/.test(part.mesh.name);
+    const wheel = wheels.includes(part.mesh);
+    const speed = heavy ? 1.8 : 3.6 + (index % 5) * 0.65;
+    const vx = (0.6 + Math.cos(angle) * 0.85) * speed;
+    const vz = Math.sin(angle) * speed;
+    const vy = heavy ? 2.1 : 3.4 + (index % 4) * 0.6;
+    const floorY = wheel ? 0.37 : /cable/.test(part.mesh.name) ? -0.7 : 0.13;
+    const gravity = 11;
+    const hitTime =
+      (vy +
+        Math.sqrt(
+          vy * vy + 2 * gravity * Math.max(0, part.target.y - floorY),
+        )) /
+      gravity;
+    const flight = { time: 0 };
+    const spin = heavy ? 0.55 : 1.8 + (index % 3);
+    timeline.to(
+      flight,
       {
-        progress: 1,
-        duration: 1,
+        time: 1.95,
+        duration: 1.95,
         ease: "none",
         onUpdate: () => {
-          // Constant forward velocity with a shallow ballistic arc, not an artificial scale-up.
-          ball.position.lerpVectors(kickStart, kickEnd, kick.progress);
-          ball.position.y += Math.sin(kick.progress * Math.PI) * 0.42;
+          const time = flight.time;
+          const travel = (1 - Math.exp(-1.1 * time)) / 1.1;
+          part.mesh.position.x = part.target.x + vx * travel;
+          part.mesh.position.z = part.target.z + vz * travel;
+          if (time <= hitTime) {
+            part.mesh.position.y =
+              part.target.y + vy * time - (gravity * time * time) / 2;
+          } else {
+            const bounce = time - hitTime;
+            part.mesh.position.y =
+              floorY +
+              Math.max(0, 1.1 * bounce - (gravity * bounce * bounce) / 2);
+          }
+          const roll = Math.min(time, hitTime + 0.2);
+          part.mesh.rotation.set(
+            part.rotation.x + Math.cos(angle) * roll * spin,
+            part.rotation.y + Math.sin(angle) * roll * spin,
+            part.rotation.z + (wheel ? Math.PI * 6 : 0) + roll * spin * 0.6,
+          );
         },
       },
-      4.15,
+      0.84,
+    );
+  });
+  timeline
+    .call(
+      () => {
+        host.dataset.stage = "reveal";
+      },
+      [],
+      2.8,
     )
-    .to(ball.rotation, { z: -8, x: 4, duration: 1, ease: "none" }, 4.15)
-    .to(host, { opacity: 0, duration: 0.18 }, 5.06);
+    .to(
+      host.parentElement ?? host,
+      { opacity: 0, duration: 0.22, ease: "power2.in" },
+      2.8,
+    );
   // Prewarm shaders before the first visible motion frame.
   renderer.compile(scene, camera);
   let frame = 0;
@@ -358,13 +319,16 @@ export function startScene(
     if (!document.hidden) {
       camera.lookAt(cameraTarget);
       atmosphere.update(timeline.time());
+      collision.update(timeline.time());
       if (composer) composer.render();
       else renderer.render(scene, camera);
     }
   };
   render();
+  timeline.play(0);
   const resize = () => {
     camera.aspect = host.clientWidth / host.clientHeight;
+    camera.zoom = Math.min(1, Math.max(0.5, camera.aspect / 1.35));
     camera.updateProjectionMatrix();
     renderer.setSize(host.clientWidth, host.clientHeight);
     composer?.setSize(host.clientWidth, host.clientHeight);
@@ -374,6 +338,7 @@ export function startScene(
     cancelAnimationFrame(frame);
     timeline.kill();
     atmosphere.dispose();
+    collision.dispose();
     bloom?.dispose();
     output?.dispose();
     renderPass?.dispose();

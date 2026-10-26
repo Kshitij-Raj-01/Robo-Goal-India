@@ -1,5 +1,6 @@
 import * as T from "three";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
+import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 
 export function createRobot() {
   const root = new T.Group();
@@ -112,14 +113,22 @@ export function createRobot() {
         0.12,
         z,
       );
-  const shell = part("Orange race deck", 0, 0.72, 0);
-  box(shell, 1.92, 0.075, 1.19, orange);
+  const shell = part("Orange race deck", 0.5, 0.72, 0);
+  box(shell, 0.92, 0.075, 1.19, orange);
+  for (const z of [-0.305, 0.305]) {
+    const panel = part("Detachable front armour panel", -0.47, 0.72, z);
+    box(panel, 0.97, 0.075, 0.58, orange);
+    screw(panel, -0.32, 0.045, z < 0 ? -0.18 : 0.18);
+  }
   for (const x of [-0.82, 0.82])
-    for (const z of [-0.49, 0.49]) screw(shell, x, 0.05, z);
+    for (const z of [-0.49, 0.49]) {
+      const bolt = part("Deck fastening bolt", x, 0.77, z);
+      screw(bolt, 0, 0, 0);
+    }
   for (let i = 0; i < 7; i++)
-    box(shell, 0.3, 0.008, 0.022, dark, 0.55, 0.044, -0.3 + i * 0.1);
+    box(shell, 0.3, 0.008, 0.022, dark, 0, 0.044, -0.3 + i * 0.1);
   for (const z of [-0.61, 0.61])
-    box(shell, 1.35, 0.025, 0.015, led, 0, -0.01, z);
+    box(shell, 0.9, 0.025, 0.015, led, 0, -0.01, z);
   for (const x of [-0.72, 0.72])
     for (const z of [-0.87, 0.87]) {
       const wheel = part("All-terrain tyre and alloy hub", x, 0.37, z);
@@ -277,6 +286,34 @@ export function createRobot() {
     0,
   );
   roller.rotation.x = Math.PI / 2;
-  kicker.scale.setScalar(0.01);
+  // Merge the fine hardware per material inside each detachable assembly.
+  // The complete bot keeps its detail without hundreds of draw calls per frame.
+  root.updateMatrixWorld(true);
+  for (const assembly of parts) {
+    const inverse = assembly.mesh.matrixWorld.clone().invert();
+    const batches = new Map<T.Material, T.BufferGeometry[]>();
+    const originals = new Set<T.BufferGeometry>();
+    assembly.mesh.traverse((object) => {
+      if (!(object instanceof T.Mesh) || Array.isArray(object.material)) return;
+      const geometry = object.geometry
+        .clone()
+        .applyMatrix4(
+          new T.Matrix4().multiplyMatrices(inverse, object.matrixWorld),
+        );
+      const flat = geometry.index ? geometry.toNonIndexed() : geometry;
+      if (flat !== geometry) geometry.dispose();
+      const batch = batches.get(object.material) || [];
+      batch.push(flat);
+      batches.set(object.material, batch);
+      originals.add(object.geometry);
+    });
+    assembly.mesh.clear();
+    for (const [material, geometries] of batches) {
+      const merged = mergeGeometries(geometries);
+      geometries.forEach((geometry) => geometry.dispose());
+      if (merged) mesh(assembly.mesh, merged, material);
+    }
+    originals.forEach((geometry) => geometry.dispose());
+  }
   return { root, parts, wheels, kicker };
 }

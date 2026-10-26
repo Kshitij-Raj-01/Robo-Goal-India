@@ -3,12 +3,27 @@ export const site = {
   organizer: "Robotic Sir AI India Pvt. Ltd.",
   url: "https://robogoalindia.com",
   parentUrl: "https://roboticsir.com",
-  email: "",
-  phone: "",
-  addresses: [] as string[],
-  businessHours: "",
-  mapUrl: "",
-  socials: [] as { name: string; url: string }[],
+  email: "ai@roboticsir.com",
+  phone: "+91-8294579554",
+  phones: [
+    { label: "Delhi", number: "+91-8294579554" },
+    { label: "Noida", number: "+91-9267913431" },
+  ],
+  addresses: [
+    "Delhi: Robotic Sir, F-24, near Preet Vihar Metro and TATA Westside, Metro Pillar 95, above Zevar Mahal, Preet Vihar, New Delhi, Delhi 110092",
+    "Noida: Spectrum Metro, BF-74, Tower B, First Floor, Phase 2, Sector 75, Noida, Uttar Pradesh 201316",
+  ],
+  businessHours:
+    "Monday–Sunday, 10:00 AM–10:00 PM. Please call before visiting.",
+  mapUrl: "https://maps.google.com/?q=Robotic+Sir+Preet+Vihar+New+Delhi",
+  socials: [
+    { name: "YouTube", url: "https://youtube.com/@roboticsirofficial" },
+    {
+      name: "Instagram",
+      url: "https://www.instagram.com/roboticsir_official/",
+    },
+    { name: "Facebook", url: "https://www.facebook.com/roboticsir/" },
+  ],
 };
 export const navigation = [
   ["Home", "/"],

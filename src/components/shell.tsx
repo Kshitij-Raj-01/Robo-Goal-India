@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ArrowUpRight, Menu, X, ArrowUp } from "lucide-react";
 import { navigation, site } from "@/lib/content";
-import { Brand } from "./ui";
+import { Brand, OrganizerLogo } from "./ui";
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -75,24 +75,7 @@ export function Navbar() {
             </Link>
             <Link href="/contact">Contact</Link>
           </nav>
-          <a
-            href={site.parentUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="organizer"
-          >
-            <span className="organizer-symbol">
-              RS<span>↗</span>
-            </span>
-            <span>
-              <b>ROBOTIC SIR</b>
-              <small>
-                Organized by
-                <br />
-                Robotic Sir AI India Pvt. Ltd.
-              </small>
-            </span>
-          </a>
+          <OrganizerLogo />
           <button
             ref={toggle}
             className="menu-toggle icon-button"
@@ -191,6 +174,12 @@ export function Footer() {
             <br />
             starts with an idea. Yours.
           </p>
+          <a href={`mailto:${site.email}`}>{site.email}</a>
+          {site.phones.map((phone) => (
+            <a href={`tel:${phone.number}`} key={phone.number}>
+              {phone.label}: {phone.number}
+            </a>
+          ))}
           {site.socials.map((s) => (
             <a
               href={s.url}

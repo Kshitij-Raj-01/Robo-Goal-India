@@ -10,7 +10,7 @@ import {
   GraduationCap,
   Check,
 } from "lucide-react";
-import { Button, Eyebrow, SectionHead } from "@/components/ui";
+import { Button, Eyebrow, SectionHead, OrganizerLogo } from "@/components/ui";
 import {
   statistics,
   hostingBenefits,
@@ -27,7 +27,7 @@ import {
   Stats,
   HeroAtmosphere,
 } from "@/components/experience";
-import { Intro, IntroReplay } from "@/components/intro";
+import { Intro } from "@/components/intro";
 export default function Home() {
   return (
     <>
@@ -90,7 +90,6 @@ export default function Home() {
           <a href="#arena">
             SCROLL TO EXPLORE <ArrowDown size={14} />
           </a>
-          <IntroReplay />
         </div>
       </section>
       <div className="broadcast-strip">
@@ -240,9 +239,7 @@ export default function Home() {
       <section className="organizer-section container">
         <div className="organizer-art">
           <span className="circuit-ring" />
-          <span className="large-rs">
-            RS<sup>↗</sup>
-          </span>
+          <OrganizerLogo prominent />
           <span className="micro">IDEAS → ENGINEERING → IMPACT</span>
         </div>
         <div>
@@ -384,13 +381,13 @@ export default function Home() {
             )}
           </p>
           <span className="micro">OFFICIAL CONTACT NUMBER</span>
-          <p>
-            {site.phone ? (
-              <a href={`tel:${site.phone}`}>{site.phone}</a>
-            ) : (
-              "To be announced"
-            )}
-          </p>
+          {site.phones.map((phone) => (
+            <p key={phone.number}>
+              <a href={`tel:${phone.number}`}>
+                {phone.label}: {phone.number}
+              </a>
+            </p>
+          ))}
         </div>
         <Button href="/contact" secondary>
           Contact Us

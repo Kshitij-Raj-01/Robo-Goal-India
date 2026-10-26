@@ -1,6 +1,29 @@
 import Link from "next/link";
 import { ArrowUpRight, ArrowRight, Crosshair } from "lucide-react";
 import type { ReactNode } from "react";
+import Image from "next/image";
+import roboticSirLogo from "../../public/images/robotic-sir-logo.webp";
+
+export function OrganizerLogo({ prominent = false }: { prominent?: boolean }) {
+  return (
+    <a
+      className={`organizer-logo ${prominent ? "organizer-logo-prominent" : ""}`}
+      href="https://roboticsir.com"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Robotic Sir — organizer of Robo Goal India (opens in a new tab)"
+    >
+      <span>Organized by</span>
+      <span className="organizer-logo-plate">
+        <Image
+          src={roboticSirLogo}
+          alt="Robotic Sir"
+          sizes={prominent ? "(max-width: 700px) 75vw, 400px" : "160px"}
+        />
+      </span>
+    </a>
+  );
+}
 export function Brand({ small = false }: { small?: boolean }) {
   return (
     <Link
