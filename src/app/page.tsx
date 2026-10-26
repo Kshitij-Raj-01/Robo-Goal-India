@@ -25,7 +25,6 @@ import {
   GalleryBrowser,
   Leaderboard,
   Stats,
-  HeroAtmosphere,
 } from "@/components/experience";
 import { Intro } from "@/components/intro";
 export default function Home() {
@@ -34,16 +33,15 @@ export default function Home() {
       <Intro />
       <section className="hero">
         <Image
-          src="/images/stadium.webp"
-          alt="Concept artwork of engineered soccer and racing robots in a floodlit stadium"
+          src="/images/robo-goal-event.webp"
+          alt="Real student-built soccer robots with metal scoops, rubber tyres and exposed electronics competing at Robo Goal India"
           fill
-          priority
+          preload
           sizes="100vw"
           className="hero-image"
         />
         <div className="hero-shade" />
         <div className="hero-grid" />
-        <HeroAtmosphere />
         <div className="hero-content container">
           <Eyebrow>INDIA’S ROBOTIC SPORTS LEAGUE</Eyebrow>
           <h1>

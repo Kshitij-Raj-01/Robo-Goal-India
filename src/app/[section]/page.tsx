@@ -159,14 +159,15 @@ export default async function SectionPage({
             <div>
               <div className="feature-image">
                 <Image
-                  src="/images/stadium.webp"
+                  src="/images/robo-goal-event.webp"
                   fill
                   sizes="(max-width:700px) 90vw, 45vw"
-                  alt="Robo Goal India stadium and competition robot concept"
+                  alt="Real student-built soccer robots competing on the Robo Goal India pitch"
                 />
               </div>
               <p className="caption">
-                Original concept artwork · The vision for a new sporting arena
+                From the Robo Goal India event · Student-built competition
+                robots
               </p>
             </div>
           </section>

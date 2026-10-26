@@ -8,7 +8,10 @@ import { createAtmosphere } from "./cinematic/atmosphere";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { createRobot } from "./cinematic/robot";
 import { createFootball } from "./cinematic/football";
-import { createCollision } from "./cinematic/collision";
+import { createGoalCelebration } from "./cinematic/celebration";
+import { createComponentCloud } from "./cinematic/component-cloud";
+import { addCurtainReveal } from "./cinematic/curtain";
+import { INTRO_TIMING } from "./intro-config";
 
 export function startScene(host: HTMLDivElement, onComplete?: () => void) {
   const scene = new T.Scene();
@@ -20,9 +23,10 @@ export function startScene(host: HTMLDivElement, onComplete?: () => void) {
     0.05,
     80,
   );
-  // Track both subjects, then pull back as the collision scatters the hardware.
-  const cameraTarget = new T.Vector3(0, 0.55, 0);
-  camera.position.set(-3.8, 2.25, 6.4);
+  // The shot opens behind the striker, with the goal and ball in the same frame.
+  const cameraTarget = new T.Vector3(0, 0.65, -2.6);
+  const portrait = camera.aspect < 0.8;
+  camera.position.set(portrait ? 1.2 : 5.4, 3.3, portrait ? 10 : 8);
   camera.zoom = Math.min(1, Math.max(0.5, camera.aspect / 1.35));
   camera.updateProjectionMatrix();
   camera.lookAt(cameraTarget);
@@ -136,7 +140,7 @@ export function startScene(host: HTMLDivElement, onComplete?: () => void) {
       bar(0.58, 0.12, 0.12, side * 9, 5, -8 + j * 2.5, glow);
     }
   }
-  // Goal frame and a lightweight real geometric net behind the robot.
+  // Full goal frame and a net that flexes as the ball scores.
   const frameMat = new T.MeshStandardMaterial({
     color: 0xb8c5d2,
     metalness: 0.75,
@@ -155,7 +159,7 @@ export function startScene(host: HTMLDivElement, onComplete?: () => void) {
       new T.LineBasicMaterial({
         color: 0x6e8593,
         transparent: true,
-        opacity: 0.35,
+        opacity: 0.65,
       }),
     ),
   );
@@ -180,137 +184,118 @@ export function startScene(host: HTMLDivElement, onComplete?: () => void) {
     composer.addPass(bloom);
     composer.addPass(output);
   }
-  const { root: robot, parts, wheels } = createRobot();
+  const robotData = createRobot();
+  const { root: robot, wheels, kicker } = robotData;
+  robot.rotation.y = -Math.PI / 2;
+  robot.position.set(0, 0, 3.35);
   scene.add(robot);
   const ball = createFootball();
-  ball.scale.setScalar(1.3);
-  ball.position.set(-3.3, 0.49, 0);
+  ball.scale.setScalar(1.15);
+  ball.position.set(0, 0.43, 0.5);
   scene.add(ball);
-  robot.position.x = 3.4;
-  const collision = createCollision(scene, new T.Vector3(-1.02, 0.48, 0));
-  host.dataset.stage = "approach";
+  const goalTime = INTRO_TIMING.goal;
+  const celebration = createGoalCelebration(scene, goalTime);
+  const netRest = new Float32Array(netGeometry.attributes.position.array);
   const timeline = gsap.timeline({ paused: true, onComplete });
+  const shot = { progress: 0 };
+  const shotStart = ball.position.clone();
+  const shotEnd = new T.Vector3(0.65, 0.62, -8.4);
+  host.dataset.stage = "run-up";
   timeline
-    .to(robot.position, { x: 0.65, duration: 0.84, ease: "power1.in" }, 0)
-    .to(ball.position, { x: -1.22, duration: 0.84, ease: "power1.in" }, 0)
-    .to(ball.rotation, { z: -4.3, duration: 0.84, ease: "power1.in" }, 0)
+    .to(robot.position, { z: 2.55, duration: 0.65, ease: "power2.out" }, 0)
     .to(
       camera.position,
-      { x: -3.1, y: 1.6, z: 5.9, duration: 0.84, ease: "sine.inOut" },
-      0,
-    )
-    .call(
-      () => {
-        host.dataset.stage = "impact";
+      {
+        x: portrait ? 0.9 : 4.3,
+        y: 2.8,
+        z: portrait ? 8.5 : 6.2,
+        duration: 1.4,
+        ease: "sine.inOut",
       },
-      [],
-      0.84,
-    )
-    .to(
-      ball.position,
-      { x: -2.7, y: 1.2, z: 1.1, duration: 0.5, ease: "power2.out" },
-      0.84,
-    )
-    .to(
-      ball.position,
-      { x: -3.8, y: 0.49, z: 1.8, duration: 0.85, ease: "power2.in" },
-      1.34,
-    )
-    .to(
-      ball.rotation,
-      { z: -12, x: 2.5, duration: 1.5, ease: "power1.out" },
-      0.84,
-    )
-    .to(
-      camera.position,
-      { x: -2.65, y: 3.4, z: 7.5, duration: 1.65, ease: "power2.out" },
-      0.86,
+      0,
     )
     .to(
       cameraTarget,
-      { x: 0.5, y: 0.55, z: 0, duration: 1.5, ease: "sine.out" },
-      0.86,
+      { x: 0.1, y: 0.8, z: -3.4, duration: 1.4, ease: "sine.inOut" },
+      0,
+    )
+    .to(kicker.position, { x: -0.7, duration: 0.15, ease: "power2.in" }, 0.52)
+    .to(kicker.position, { x: -1.16, duration: 0.11, ease: "power3.in" }, 0.67)
+    .call(
+      () => {
+        host.dataset.stage = "shot";
+      },
+      [],
+      0.78,
+    )
+    .to(kicker.position, { x: -0.88, duration: 0.26, ease: "power2.out" }, 0.81)
+    .to(
+      shot,
+      {
+        progress: 1,
+        duration: goalTime - 0.78,
+        ease: "none",
+        onUpdate: () => {
+          ball.position.lerpVectors(shotStart, shotEnd, shot.progress);
+          ball.position.y += Math.sin(shot.progress * Math.PI) * 0.8;
+        },
+      },
+      0.78,
+    )
+    .to(ball.rotation, { x: -15, z: 1.3, duration: 0.87, ease: "none" }, 0.78)
+    .call(
+      () => {
+        host.dataset.stage = "goal";
+      },
+      [],
+      goalTime,
+    )
+    .to(
+      ball.position,
+      { z: -7.85, y: 0.43, x: 0.72, duration: 0.45, ease: "power2.out" },
+      goalTime,
+    )
+    .to(
+      ball.rotation,
+      { x: -16.2, duration: 0.45, ease: "power2.out" },
+      goalTime,
     )
     .call(
       () => {
-        host.dataset.stage = "debris";
+        host.dataset.stage = "celebration";
       },
       [],
-      1.05,
+      1.85,
+    )
+    .call(
+      () => {
+        host.dataset.stage = "components";
+      },
+      [],
+      INTRO_TIMING.scatter,
     );
-
   wheels.forEach((wheel) => {
     timeline.to(
       wheel.rotation,
-      { z: Math.PI * 6, duration: 0.84, ease: "power1.in" },
+      { z: Math.PI * 2.5, duration: 0.65, ease: "power2.out" },
       0,
     );
   });
-
-  // Independent ballistic paths: the impact tears the bot apart; it never reassembles.
-  // Mass and contact height give heavy chassis pieces less travel than loose hardware.
-  parts.forEach((part, index) => {
-    const angle = index * 2.39996;
-    const heavy = /chassis|deck|Battery/.test(part.mesh.name);
-    const wheel = wheels.includes(part.mesh);
-    const speed = heavy ? 1.8 : 3.6 + (index % 5) * 0.65;
-    const vx = (0.6 + Math.cos(angle) * 0.85) * speed;
-    const vz = Math.sin(angle) * speed;
-    const vy = heavy ? 2.1 : 3.4 + (index % 4) * 0.6;
-    const floorY = wheel ? 0.37 : /cable/.test(part.mesh.name) ? -0.7 : 0.13;
-    const gravity = 11;
-    const hitTime =
-      (vy +
-        Math.sqrt(
-          vy * vy + 2 * gravity * Math.max(0, part.target.y - floorY),
-        )) /
-      gravity;
-    const flight = { time: 0 };
-    const spin = heavy ? 0.55 : 1.8 + (index % 3);
-    timeline.to(
-      flight,
-      {
-        time: 1.95,
-        duration: 1.95,
-        ease: "none",
-        onUpdate: () => {
-          const time = flight.time;
-          const travel = (1 - Math.exp(-1.1 * time)) / 1.1;
-          part.mesh.position.x = part.target.x + vx * travel;
-          part.mesh.position.z = part.target.z + vz * travel;
-          if (time <= hitTime) {
-            part.mesh.position.y =
-              part.target.y + vy * time - (gravity * time * time) / 2;
-          } else {
-            const bounce = time - hitTime;
-            part.mesh.position.y =
-              floorY +
-              Math.max(0, 1.1 * bounce - (gravity * bounce * bounce) / 2);
-          }
-          const roll = Math.min(time, hitTime + 0.2);
-          part.mesh.rotation.set(
-            part.rotation.x + Math.cos(angle) * roll * spin,
-            part.rotation.y + Math.sin(angle) * roll * spin,
-            part.rotation.z + (wheel ? Math.PI * 6 : 0) + roll * spin * 0.6,
-          );
-        },
-      },
-      0.84,
-    );
-  });
-  timeline
-    .call(
-      () => {
-        host.dataset.stage = "reveal";
-      },
-      [],
-      2.8,
-    )
-    .to(
-      host.parentElement ?? host,
-      { opacity: 0, duration: 0.22, ease: "power2.in" },
-      2.8,
-    );
+  createComponentCloud(
+    scene,
+    camera,
+    robotData,
+    timeline,
+    INTRO_TIMING.scatter,
+  );
+  timeline.call(
+    () => {
+      host.dataset.stage = "close-ups";
+    },
+    [],
+    INTRO_TIMING.closeups,
+  );
+  addCurtainReveal(host, timeline);
   // Prewarm shaders before the first visible motion frame.
   renderer.compile(scene, camera);
   let frame = 0;
@@ -319,7 +304,23 @@ export function startScene(host: HTMLDivElement, onComplete?: () => void) {
     if (!document.hidden) {
       camera.lookAt(cameraTarget);
       atmosphere.update(timeline.time());
-      collision.update(timeline.time());
+      celebration.update(timeline.time());
+      const age = timeline.time() - goalTime;
+      if (age >= 0 && age < 1.3) {
+        const positions = netGeometry.attributes.position;
+        for (let index = 0; index < positions.count; index++) {
+          const x = netRest[index * 3];
+          const y = netRest[index * 3 + 1];
+          const distance = Math.hypot(x - shotEnd.x, y - shotEnd.y);
+          const wave = Math.sin(age * 15 - distance * 2) * Math.exp(-age * 3.5);
+          positions.setZ(
+            index,
+            netRest[index * 3 + 2] -
+              Math.max(0, 1 - distance / 2.5) * 0.35 * wave,
+          );
+        }
+        positions.needsUpdate = true;
+      }
       if (composer) composer.render();
       else renderer.render(scene, camera);
     }
@@ -338,20 +339,32 @@ export function startScene(host: HTMLDivElement, onComplete?: () => void) {
     cancelAnimationFrame(frame);
     timeline.kill();
     atmosphere.dispose();
-    collision.dispose();
+    celebration.dispose();
     bloom?.dispose();
     output?.dispose();
     renderPass?.dispose();
     composer?.dispose();
     window.removeEventListener("resize", resize);
-    scene.traverse((o) => {
-      if (o instanceof T.Mesh || o instanceof T.LineSegments) {
-        o.geometry.dispose();
-        (Array.isArray(o.material) ? o.material : [o.material]).forEach((m) =>
-          m.dispose(),
-        );
+    // Foreground clones share buffers and textures with the assembled robot.
+    const geometries = new Set<T.BufferGeometry>();
+    const materials = new Set<T.Material>();
+    const maps = new Set<T.Texture>();
+    scene.traverse((object) => {
+      if (object instanceof T.Mesh || object instanceof T.LineSegments) {
+        geometries.add(object.geometry);
+        (Array.isArray(object.material)
+          ? object.material
+          : [object.material]
+        ).forEach((material) => {
+          materials.add(material);
+          if ("map" in material && material.map instanceof T.Texture)
+            maps.add(material.map);
+        });
       }
     });
+    geometries.forEach((geometry) => geometry.dispose());
+    materials.forEach((material) => material.dispose());
+    maps.forEach((map) => map.dispose());
     texture.dispose();
     env.dispose();
     key.shadow.dispose();

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Navbar, Footer, Analytics } from "@/components/shell";
 import { JsonLd } from "@/components/ui";
 import { site } from "@/lib/content";
+import { INTRO_BOOT_SCRIPT, INTRO_CRITICAL_CSS } from "@/lib/intro-config";
 import "@fontsource/barlow/latin-400.css";
 import "@fontsource/barlow/latin-500.css";
 import "@fontsource/barlow/latin-600.css";
@@ -26,10 +27,10 @@ export const metadata: Metadata = {
     description: "Engineering meets the energy of sport.",
     images: [
       {
-        url: "/images/stadium.webp",
-        width: 1672,
-        height: 941,
-        alt: "Robo Goal India robotic stadium concept artwork",
+        url: "/images/robo-goal-event.webp",
+        width: 1920,
+        height: 1280,
+        alt: "Student-built soccer bots at the Robo Goal India event",
       },
     ],
   },
@@ -43,7 +44,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" data-scroll-behavior="smooth">
+    <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
+      <head>
+        <style id="intro-first-paint">{INTRO_CRITICAL_CSS}</style>
+        <script
+          id="intro-boot"
+          dangerouslySetInnerHTML={{ __html: INTRO_BOOT_SCRIPT }}
+        />
+      </head>
       <body>
         <Navbar />
         <main id="main">{children}</main>

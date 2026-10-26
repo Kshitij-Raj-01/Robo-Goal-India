@@ -2,7 +2,7 @@
 
 Last consolidated: 26 October 2026 (Asia/Kolkata)
 
-Implementation update, 26 October 2026: the dedicated website now uses the official transparent Robotic Sir wordmark at `public/images/robotic-sir-logo.webp`, sourced from roboticsir.com. Shared public contact data is filled in `src/lib/content.ts`. Typography uses a larger 16–18 px reading scale and readable interface labels. The homepage opening is a server-rendered, control-free three-second WebGL bot/football collision and debris sequence with reduced-motion and failure fallbacks. The earlier skip/audio/replay and reassembly behavior is superseded by this user-requested direction.
+Implementation update, 26 October 2026: the dedicated website uses the official transparent Robotic Sir wordmark at `public/images/robotic-sir-logo.webp`, with public contact data in `src/lib/content.ts`. Website text is at least 22px, preserving larger headings. The homepage and About image now use the real `rgi-action-2.jpg` event photograph from the related repository, optimized as `public/images/robo-goal-event.webp`. The illustrative animated bot is rebuilt around the event photos' sheet-metal scoops, low chassis, perforated rubber tyres, taped battery and exposed electronics. It scores, celebrates and scatters Arduino, tyre, battery and MOSFET hardware into close-ups. Velvet curtains descend, a gold Robo Goal India title animates at the center, then the curtains part over the homepage. The 7.45-second coded sequence uses a synchronous head visibility gate to prevent a homepage flash, plus reduced-motion, no-JavaScript and failure fallbacks. No skip, audio or replay controls are shown. This supersedes the collision intro and generated stadium hero.
 
 This file is the durable working context for agents and contributors working on the Robo Goal India website. It consolidates verified material from this repository, the related `Robotic-Sir-Community` repository, and the associated Codex project chats.
 
@@ -313,7 +313,7 @@ Robo Goal India sponsor-tier concepts in the dedicated site include Title Partne
   - legal/document routes and a restricted admin enquiry interface.
 - The current content arrays for events, fixtures, media, partners, sponsors, teams, robots, judges, and announcements are intentionally empty. They are not permission to invent demo data.
 - The current national-tour map uses an organizer-supplied image at `public/maps/india-organizer.png`; it is not an authoritative political map.
-- The stadium hero is AI-generated concept art, not documentary event photography.
+- The old stadium concept assets are retained, but the current hero is a genuine event photograph from the related Robotic Sir repository. The 3D intro remains an illustrative recreation based on those bots, not documentary footage.
 - The site includes a cinematic procedural robot/football intro. It should remain skippable, reduced-motion aware, and lightweight on constrained devices.
 
 ### Related repository: `Robotic-Sir-Community`

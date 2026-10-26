@@ -23,7 +23,7 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--body);
-  font-size: 18px;
+  font-size: 22px;
   line-height: 1.6;
 }
 a {
@@ -119,7 +119,7 @@ svg {
 }
 .micro,
 .eyebrow {
-  font-size: 14px;
+  font-size: 22px;
   font-weight: 700;
   letter-spacing: 0.17em;
   text-transform: uppercase;
@@ -153,7 +153,7 @@ svg {
   background: var(--orange);
   border: 1px solid var(--orange);
   color: #070c14;
-  font-size: 16px;
+  font-size: 22px;
   font-weight: 700;
   transition:
     background 0.2s,
@@ -182,7 +182,7 @@ svg {
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  font-size: 16px;
+  font-size: 22px;
   font-weight: 600;
   letter-spacing: 0.02em;
   background: none;
@@ -228,7 +228,7 @@ svg {
   display: inline-block;
   border: 1px solid var(--line);
   padding: 5px 10px;
-  font-size: 13px;
+  font-size: 22px;
   letter-spacing: 0.07em;
   color: var(--cyan);
   font-weight: 600;
@@ -312,13 +312,13 @@ svg {
 .brand-type > span {
   display: block;
   font-family: var(--body);
-  font-size: 13px;
+  font-size: 22px;
   letter-spacing: 0.55em;
   margin-top: 7px;
 }
 .brand-type b {
   color: var(--orange);
-  font-size: 12px;
+  font-size: 22px;
 }
 .desktop-nav {
   display: flex;
@@ -326,7 +326,7 @@ svg {
   gap: 19px;
 }
 .desktop-nav a {
-  font-size: 14px;
+  font-size: 22px;
   color: #d4dbe4;
   white-space: nowrap;
   position: relative;
@@ -361,16 +361,16 @@ svg {
   color: var(--orange);
 }
 .organizer-symbol span {
-  font-size: 17px;
+  font-size: 22px;
   vertical-align: top;
 }
 .organizer b {
-  font-size: 13px;
+  font-size: 22px;
   letter-spacing: 0.08em;
 }
 .organizer small {
   display: block;
-  font-size: 12px;
+  font-size: 22px;
   color: var(--muted);
   line-height: 1.4;
 }
@@ -406,7 +406,7 @@ svg {
   font-size: 27px;
 }
 .mobile-menu a > span {
-  font: 10px var(--body);
+  font: 22px var(--body);
   color: var(--orange);
 }
 .mobile-menu a > svg {
@@ -445,7 +445,7 @@ svg {
 }
 .hero .eyebrow {
   color: var(--text);
-  font-size: 14px;
+  font-size: 22px;
   letter-spacing: 0.18em;
   margin-bottom: 27px;
 }
@@ -460,7 +460,7 @@ svg {
   margin-top: 3px;
 }
 .hero-content > p {
-  font-size: 18px;
+  font-size: 22px;
   line-height: 1.6;
   color: #c0c9d4;
   margin: 27px 0 25px;
@@ -471,7 +471,7 @@ svg {
   gap: 15px;
   align-items: center;
   margin-top: 30px;
-  font-size: 12px;
+  font-size: 22px;
   letter-spacing: 0.07em;
   font-weight: 600;
   color: #b9c5d2;
@@ -499,7 +499,7 @@ svg {
   transform: skew(-3deg);
 }
 .hero-scoreboard > div {
-  font-size: 12px;
+  font-size: 22px;
   letter-spacing: 0.12em;
 }
 .hero-scoreboard strong {
@@ -514,7 +514,7 @@ svg {
 }
 .hero-scoreboard small {
   color: #819bb2;
-  font-size: 12px;
+  font-size: 22px;
   letter-spacing: 0.15em;
 }
 .hero-bottom {
@@ -525,7 +525,7 @@ svg {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 12px;
+  font-size: 22px;
   letter-spacing: 0.16em;
   color: #a6b1bd;
 }
@@ -535,7 +535,7 @@ svg {
   gap: 13px;
 }
 .hero-bottom > span:last-child {
-  font-size: 17px;
+  font-size: 22px;
   color: #fff;
 }
 .hero-bottom b {
@@ -551,12 +551,12 @@ svg {
   padding: 13px 4%;
   font-family: var(--heading);
   font-weight: 700;
-  font-size: 17px;
+  font-size: 22px;
   letter-spacing: 0.08em;
 }
 .broadcast-strip > span:nth-child(2) {
   font-family: var(--body);
-  font-size: 13px;
+  font-size: 22px;
   letter-spacing: 0.1em;
 }
 .broadcast-strip b {
@@ -590,7 +590,7 @@ svg {
 }
 .stats > div > span {
   color: #a9b7c6;
-  font-size: 15px;
+  font-size: 22px;
 }
 .pending-stat {
   display: flex;
@@ -600,7 +600,7 @@ svg {
 .pending-stat small {
   font-family: var(--body);
   color: #668098;
-  font-size: 12px;
+  font-size: 22px;
   line-height: 1.5;
   max-width: 60px;
   letter-spacing: 0.14em;
@@ -613,7 +613,7 @@ svg {
   margin-bottom: 38px;
 }
 .section-head .eyebrow {
-  font-size: 12px;
+  font-size: 22px;
   margin-bottom: 19px;
 }
 .section-head h2 {
@@ -625,7 +625,7 @@ svg {
 }
 .section-head p {
   max-width: 625px;
-  font-size: 17px;
+  font-size: 22px;
   margin: 20px 0 0;
 }
 .section-head > .text-link {
@@ -662,14 +662,14 @@ svg {
   inset: 0;
   background:
     linear-gradient(90deg, #0a1527f0, #0a152766),
-    url("/images/stadium.webp") 70% center/cover;
+    url("/images/robo-goal-event.webp") 70% center/cover;
   transition: transform 0.6s;
 }
 .discipline:hover .discipline-photo {
   transform: scale(1.04);
 }
 .discipline > .micro {
-  font-size: 12px;
+  font-size: 22px;
   color: #a8b6c7;
   margin-bottom: 30px;
 }
@@ -690,7 +690,7 @@ svg {
   color: var(--orange);
 }
 .discipline p {
-  font-size: 16px;
+  font-size: 22px;
   margin-top: 20px;
   color: #c0cad7;
 }
@@ -698,7 +698,7 @@ svg {
   margin-top: auto;
   border-top: 1px solid #ffffff2b;
   padding-top: 18px;
-  font-size: 12px;
+  font-size: 22px;
   letter-spacing: 0.12em;
   display: flex;
   align-items: center;
@@ -774,7 +774,7 @@ svg {
   background: var(--bg);
   border: 1px solid #3b4655;
   padding: 10px;
-  font-size: 15px;
+  font-size: 22px;
   font-weight: 700;
   transition: background 0.2s;
 }
@@ -796,7 +796,7 @@ svg {
   text-transform: uppercase;
 }
 .journey-stages button > span:last-child {
-  font-size: 12px;
+  font-size: 22px;
   color: #70869b;
   letter-spacing: 0.12em;
 }
@@ -815,7 +815,7 @@ svg {
   margin-top: 10px;
 }
 .stage-detail p {
-  font-size: 16px;
+  font-size: 22px;
   max-width: 580px;
   margin: 14px 0 0;
 }
@@ -834,12 +834,12 @@ svg {
   align-self: flex-start;
 }
 .stage-specs dt {
-  font-size: 14px;
+  font-size: 22px;
   color: var(--orange);
   font-weight: 600;
 }
 .stage-specs dd {
-  font-size: 15px;
+  font-size: 22px;
   color: var(--muted);
   margin: 3px 0 0;
 }
@@ -860,7 +860,7 @@ svg {
   justify-content: space-between;
 }
 .map-top .micro {
-  font-size: 12px;
+  font-size: 22px;
 }
 .india-map {
   display: block;
@@ -871,7 +871,7 @@ svg {
 .map-disclaimer {
   display: block;
   text-align: center;
-  font-size: 12px;
+  font-size: 22px;
   color: #748ba0;
   margin-bottom: 15px;
 }
@@ -879,7 +879,7 @@ svg {
   display: flex;
   justify-content: center;
   gap: 16px;
-  font-size: 12px;
+  font-size: 22px;
   flex-wrap: wrap;
 }
 .map-legend > span {
@@ -908,7 +908,7 @@ svg {
   line-height: 0.95;
 }
 .fixture-announcement p {
-  font-size: 17px;
+  font-size: 22px;
   max-width: 380px;
 }
 .announcement-status {
@@ -923,12 +923,12 @@ svg {
   color: var(--orange);
 }
 .announcement-status b {
-  font-size: 12px;
+  font-size: 22px;
   letter-spacing: 0.08em;
   display: block;
 }
 .announcement-status span {
-  font-size: 14px;
+  font-size: 22px;
   color: var(--muted);
 }
 .fixture-list {
@@ -960,7 +960,7 @@ svg {
 }
 .fixture-row p {
   margin: 8px 0;
-  font-size: 16px;
+  font-size: 22px;
 }
 .fixture-row .text-link {
   margin-right: 20px;
@@ -971,14 +971,14 @@ svg {
   gap: 10px;
   font-family: monospace;
   color: var(--cyan);
-  font-size: 15px;
+  font-size: 22px;
 }
 .map-city circle {
   fill: #778292;
 }
 .map-city text {
   fill: white;
-  font-size: 15px;
+  font-size: 22px;
 }
 .map-city.current circle {
   fill: var(--orange);
@@ -1021,7 +1021,7 @@ svg {
 }
 .campus-inner .eyebrow {
   color: #17202a;
-  font-size: 12px;
+  font-size: 22px;
 }
 .campus-inner .eyebrow > span {
   background: #17202a;
@@ -1035,7 +1035,7 @@ svg {
 }
 .campus-inner p {
   color: #362820;
-  font-size: 17px;
+  font-size: 22px;
   margin: 25px 0;
   max-width: 460px;
 }
@@ -1058,7 +1058,7 @@ svg {
   gap: 12px;
   align-items: center;
   margin: 13px 0;
-  font-size: 16px;
+  font-size: 22px;
 }
 .campus-benefits .text-link {
   color: #0a1321;
@@ -1084,7 +1084,7 @@ svg {
   color: var(--orange);
 }
 .event-empty-icon > span {
-  font-size: 12px;
+  font-size: 22px;
   letter-spacing: 0.15em;
 }
 .event-empty h3 {
@@ -1092,7 +1092,7 @@ svg {
   font-size: 33px;
 }
 .event-empty p {
-  font-size: 16px;
+  font-size: 22px;
   max-width: 580px;
 }
 .leaderboard-section {
@@ -1110,7 +1110,7 @@ svg {
   border-bottom: 1px solid var(--line);
 }
 .board-top > span:first-child {
-  font-size: 13px;
+  font-size: 22px;
   font-weight: 600;
   letter-spacing: 0.06em;
 }
@@ -1119,11 +1119,11 @@ svg {
   background: #142133;
   border: 1px solid var(--line);
   color: var(--muted);
-  font-size: 14px;
+  font-size: 22px;
   padding: 7px 10px;
 }
 .board-top .micro {
-  font-size: 12px;
+  font-size: 22px;
 }
 .table-scroll {
   overflow: auto;
@@ -1134,7 +1134,7 @@ table {
   text-align: left;
 }
 th {
-  font-size: 12px;
+  font-size: 22px;
   text-transform: uppercase;
   letter-spacing: 0.09em;
   font-weight: 600;
@@ -1145,12 +1145,12 @@ th {
 td {
   padding: 20px 22px;
   border-top: 1px solid var(--line);
-  font-size: 16px;
+  font-size: 22px;
 }
 td small {
   display: block;
   color: var(--muted);
-  font-size: 14px;
+  font-size: 22px;
 }
 .points {
   color: var(--orange);
@@ -1164,7 +1164,7 @@ td small {
   color: var(--orange);
 }
 .board-empty > span {
-  font-size: 17px;
+  font-size: 22px;
   color: #dce4ee;
 }
 .board-empty small {
@@ -1173,7 +1173,7 @@ td small {
 .board-empty > a {
   margin-left: auto;
   color: var(--orange);
-  font-size: 14px;
+  font-size: 22px;
   white-space: nowrap;
 }
 .organizer-section {
@@ -1188,7 +1188,7 @@ td small {
   font-size: 57px;
 }
 .organizer-section p {
-  font-size: 17px;
+  font-size: 22px;
   margin: 24px 0;
 }
 .organizer-art {
@@ -1216,7 +1216,7 @@ td small {
   letter-spacing: 0;
 }
 .organizer-art .micro {
-  font-size: 12px;
+  font-size: 22px;
   position: relative;
   z-index: 1;
 }
@@ -1255,14 +1255,14 @@ td small {
   font-size: 27px;
 }
 .gallery-empty p {
-  font-size: 16px;
+  font-size: 22px;
   margin: 12px 0 0;
   max-width: 630px;
 }
 .gallery-empty > .status-tag {
   margin-left: auto;
   white-space: nowrap;
-  font-size: 12px;
+  font-size: 22px;
 }
 .closing-cta {
   padding: 55px;
@@ -1280,7 +1280,7 @@ td small {
   line-height: 1.02;
 }
 .closing-cta p {
-  font-size: 17px;
+  font-size: 22px;
   margin: 20px 0 0;
 }
 .button-stack {
@@ -1300,25 +1300,25 @@ footer {
 }
 footer h4 {
   font-family: var(--body);
-  font-size: 13px;
+  font-size: 22px;
   letter-spacing: 0.11em;
   margin: 5px 0 24px;
 }
 footer .footer-top > div > a:not(.brand) {
   display: block;
   color: #92a2b6;
-  font-size: 15px;
+  font-size: 22px;
   margin: 10px 0;
 }
 footer .footer-top > div > a:hover {
   color: var(--orange);
 }
 footer p {
-  font-size: 16px;
+  font-size: 22px;
   margin: 20px 0;
 }
 footer .micro {
-  font-size: 12px;
+  font-size: 22px;
   letter-spacing: 0.04em;
 }
 footer .footer-top .text-link {
@@ -1332,7 +1332,7 @@ footer .footer-top .text-link {
   align-items: center;
   padding-block: 22px;
   gap: 25px;
-  font-size: 12px;
+  font-size: 22px;
   color: #718297;
 }
 .footer-bottom > div {
@@ -1359,13 +1359,13 @@ footer .footer-top .text-link {
 }
 .page-hero p {
   max-width: 690px;
-  font-size: 18px;
+  font-size: 22px;
   margin-top: 27px;
   margin-bottom: 0;
 }
 .hero-coordinate {
   display: block;
-  font-size: 12px;
+  font-size: 22px;
   letter-spacing: 0.17em;
   color: #657b91;
   margin-top: 35px;
@@ -1382,14 +1382,14 @@ footer .footer-top .text-link {
 }
 .empty-state > .micro {
   display: block;
-  font-size: 12px;
+  font-size: 22px;
 }
 .empty-state h3 {
   font-size: 34px;
   margin: 14px 0;
 }
 .empty-state p {
-  font-size: 17px;
+  font-size: 22px;
   max-width: 550px;
   margin: 0 auto 20px;
 }
@@ -1406,7 +1406,7 @@ footer .footer-top .text-link {
 }
 .filter-bar label > span {
   text-transform: uppercase;
-  font-size: 12px;
+  font-size: 22px;
   letter-spacing: 0.1em;
   display: block;
   color: var(--muted);
@@ -1418,7 +1418,7 @@ footer .footer-top .text-link {
   color: white;
   background: var(--panel);
   border: 1px solid var(--line);
-  font-size: 16px;
+  font-size: 22px;
 }
 .filter-bar > .micro,
 .filter-bar > .text-link {
@@ -1452,7 +1452,7 @@ footer .footer-top .text-link {
   margin: 20px 0;
 }
 .event-card p {
-  font-size: 15px;
+  font-size: 22px;
 }
 .event-card p > svg {
   margin-right: 5px;
@@ -1467,7 +1467,7 @@ footer .footer-top .text-link {
   background: transparent;
   border: 1px solid var(--line);
   color: var(--muted);
-  font-size: 15px;
+  font-size: 22px;
   padding: 10px 15px;
 }
 .tabs button.active,
@@ -1497,7 +1497,7 @@ footer .footer-top .text-link {
   display: flex;
   justify-content: space-between;
   padding: 16px;
-  font-size: 15px;
+  font-size: 22px;
 }
 .lightbox {
   border: 1px solid var(--line);
@@ -1539,12 +1539,12 @@ footer .footer-top .text-link {
   inset: 0;
   width: 100%;
   height: 100dvh;
-  z-index: 1000;
+  z-index: 2147483000;
   background: #030910;
   overflow: hidden;
-  animation: intro-escape 0s 7s forwards;
+  animation: intro-escape 0s 15s forwards;
 }
-body:has(.intro) {
+html[data-intro] body {
   overflow: hidden;
 }
 .intro-canvas,
@@ -1567,86 +1567,104 @@ body:has(.intro) {
 .intro-ready .intro-standby {
   visibility: hidden;
 }
-.intro-ground {
+.intro-revealing {
+  background: transparent;
+}
+.intro-curtain {
   position: absolute;
-  inset: 35% -50% -80%;
-  transform: rotateX(72deg);
+  inset: 0;
+  visibility: hidden;
+  z-index: 2;
+  perspective: 1000px;
+  will-change: transform;
+}
+.curtain-panel {
+  position: absolute;
+  top: -2px;
+  bottom: -4px;
+  width: 50.5%;
   background:
-    repeating-linear-gradient(90deg, transparent 0 99px, #7acfc81c 100px),
-    repeating-linear-gradient(0deg, transparent 0 99px, #7acfc81c 100px);
-  border-top: 1px solid #ffffff25;
-}
-.intro-bot {
-  position: absolute;
-  left: 51%;
-  top: 49%;
-  width: 180px;
-  height: 105px;
-  transform: translate(-5%, -30%) rotateY(-20deg) rotateX(10deg);
-  filter: drop-shadow(0 20px 18px #000);
-}
-.intro-deck {
-  position: absolute;
-  inset: 15px 0 20px;
-  background: linear-gradient(155deg, #ffae70, #e95613 35%, #872500);
-  border: 3px solid #cbd5df;
-  border-radius: 12px;
-  box-shadow:
-    inset 0 -12px 0 #101c28,
-    0 0 20px #ff692922;
-  transform: skewY(-8deg);
-}
-.intro-wheel {
-  position: absolute;
-  top: 50px;
-  width: 48px;
-  height: 57px;
-  border: 10px solid #10141b;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    #a3b0bb 0 20%,
-    #263442 25% 60%,
-    #9aa7b6 65%
-  );
-  box-shadow: 0 4px 0 #000;
-}
-.intro-wheel-back {
-  right: 7px;
-}
-.intro-wheel-front {
-  left: 2px;
-  z-index: 1;
-}
-.intro-sensor {
-  position: absolute;
-  top: 6px;
-  left: 6px;
-  width: 40px;
-  height: 16px;
-  border-radius: 4px;
-  background: #5ad9eb;
-  box-shadow: 0 0 22px #63d8f488;
-}
-.intro-ball {
-  position: absolute;
-  left: 36%;
-  top: 53%;
-  width: 58px;
-  height: 58px;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 35% 25%, #fff 0 18%, transparent 45%),
-    conic-gradient(
-      #e9e9e5 0 60deg,
-      #101820 60deg 120deg,
-      #dfdfd9 120deg 240deg,
-      #151e27 240deg 300deg,
-      #e9e9e5 300deg
+    linear-gradient(180deg, #09020666, transparent 20%, #08020466 100%),
+    repeating-linear-gradient(
+      90deg,
+      #24070d 0%,
+      #53121d 4%,
+      #7a2030 8%,
+      #48101b 12%,
+      #140308 17%,
+      #390b14 21%
     );
+  border-bottom: 5px solid #b28b46;
   box-shadow:
-    inset -8px -10px 15px #0009,
-    0 17px 14px #0009;
+    0 22px 35px #000a,
+    inset -18px 0 30px #0007;
+  will-change: transform;
+}
+.curtain-panel-left {
+  left: 0;
+}
+.curtain-panel-right {
+  right: 0;
+  transform-origin: right center;
+}
+.curtain-panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    #ffffff04 0 1px,
+    transparent 1px 4px
+  );
+  opacity: 0.45;
+}
+.curtain-title {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 92%;
+  text-align: center;
+  font-family: var(--heading);
+  font-weight: 800;
+  font-size: clamp(54px, 9vw, 138px);
+  line-height: 1.05;
+  letter-spacing: 0.08em;
+  filter: drop-shadow(0 6px 2px #100204) drop-shadow(0 0 25px #f4c05736);
+}
+.curtain-title-line:last-child {
+  font-size: 1.3em;
+  letter-spacing: 0.2em;
+  padding-left: 0.2em;
+}
+.curtain-letter {
+  display: inline-block;
+  opacity: 0;
+  color: #e1b55d;
+  background: linear-gradient(
+    110deg,
+    #936320 0%,
+    #e9bf63 24%,
+    #fff3bf 38%,
+    #bc8730 52%,
+    #fff0a9 65%,
+    #bb8731 82%,
+    #e9bf63 100%
+  );
+  background-size: 240% 100%;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.curtain-illuminated .curtain-letter {
+  animation: curtain-gold-shine 1.4s ease-in-out both;
+}
+@keyframes curtain-gold-shine {
+  from {
+    background-position: 100% 50%;
+  }
+  to {
+    background-position: 0% 50%;
+  }
 }
 @keyframes intro-escape {
   to {
@@ -1667,7 +1685,7 @@ body:has(.intro) {
   margin: 30px 0 18px;
 }
 .prose p {
-  font-size: 17px;
+  font-size: 22px;
 }
 .tag-list {
   display: flex;
@@ -1678,7 +1696,7 @@ body:has(.intro) {
 .tag-list > span {
   padding: 8px 14px;
   border: 1px solid var(--line);
-  font-size: 15px;
+  font-size: 22px;
   color: var(--cyan);
 }
 .feature-image {
@@ -1691,7 +1709,7 @@ body:has(.intro) {
   object-position: 70%;
 }
 .caption {
-  font-size: 12px;
+  font-size: 22px;
   color: var(--muted);
   margin-top: 8px;
 }
@@ -1714,7 +1732,7 @@ body:has(.intro) {
   margin-bottom: 17px;
 }
 .info-card p {
-  font-size: 16px;
+  font-size: 22px;
 }
 .info-card:hover {
   border-color: #ff692955;
@@ -1739,7 +1757,7 @@ body:has(.intro) {
   margin-bottom: 20px;
 }
 .logo-card p {
-  font-size: 15px;
+  font-size: 22px;
   margin-top: 15px;
 }
 .tier-grid {
@@ -1754,11 +1772,11 @@ body:has(.intro) {
   min-height: 95px;
 }
 .tier-grid .micro {
-  font-size: 12px;
+  font-size: 22px;
   color: var(--orange);
 }
 .tier-grid h3 {
-  font-size: 21px;
+  font-size: 22px;
   margin-top: 12px;
 }
 .benefits-list {
@@ -1771,7 +1789,7 @@ body:has(.intro) {
   gap: 12px;
   padding: 13px 0;
   border-bottom: 1px solid var(--line);
-  font-size: 17px;
+  font-size: 22px;
   color: var(--muted);
 }
 .benefits-list svg {
@@ -1786,7 +1804,7 @@ body:has(.intro) {
   padding-bottom: 20px;
 }
 .contact-detail .micro {
-  font-size: 12px;
+  font-size: 22px;
   color: var(--orange);
 }
 .contact-detail p {
@@ -1817,13 +1835,13 @@ body:has(.intro) {
   border-bottom: 1px solid var(--line);
 }
 .detail-list dt {
-  font-size: 14px;
+  font-size: 22px;
   color: var(--orange);
 }
 .detail-list dd {
   margin: 7px 0 0;
   color: var(--muted);
-  font-size: 17px;
+  font-size: 22px;
 }
 @keyframes pulse {
   50% {
@@ -1874,13 +1892,13 @@ body:has(.intro) {
     gap: 12px;
   }
   .desktop-nav a {
-    font-size: 13px;
+    font-size: 22px;
   }
   .organizer {
     padding-left: 12px;
   }
   .organizer small {
-    font-size: 12px;
+    font-size: 22px;
   }
   .organizer-symbol {
     font-size: 29px;
@@ -1890,7 +1908,7 @@ body:has(.intro) {
     width: calc(100% - 50px);
   }
   .brand-type {
-    font-size: 21px;
+    font-size: 22px;
   }
   .container {
     width: calc(100% - 80px);
@@ -1935,7 +1953,7 @@ body:has(.intro) {
     border-left: 0;
   }
   .organizer small {
-    font-size: 12px;
+    font-size: 22px;
   }
   .container {
     width: calc(100% - 64px);
@@ -1966,10 +1984,10 @@ body:has(.intro) {
     font-size: 37px;
   }
   .pending-stat small {
-    font-size: 12px;
+    font-size: 22px;
   }
   .stats > div > span {
-    font-size: 13px;
+    font-size: 22px;
   }
   .campus-inner h2 {
     font-size: 55px;
@@ -1978,10 +1996,10 @@ body:has(.intro) {
     font-size: 53px;
   }
   .journey-stages h3 {
-    font-size: 20px;
+    font-size: 22px;
   }
   .journey-stages button > span:last-child {
-    font-size: 12px;
+    font-size: 22px;
   }
   .organizer-section {
     gap: 35px;
@@ -2057,10 +2075,10 @@ body:has(.intro) {
     font-size: 30px;
   }
   .brand-type {
-    font-size: 20px;
+    font-size: 22px;
   }
   .brand-type > span {
-    font-size: 12px;
+    font-size: 22px;
   }
   .organizer {
     gap: 5px;
@@ -2070,10 +2088,10 @@ body:has(.intro) {
     font-size: 25px;
   }
   .organizer b {
-    font-size: 12px;
+    font-size: 22px;
   }
   .organizer small {
-    font-size: 12px;
+    font-size: 22px;
     max-width: 100px;
   }
   .menu-toggle {
@@ -2106,7 +2124,7 @@ body:has(.intro) {
     padding-top: 130px;
   }
   .hero .eyebrow {
-    font-size: 12px;
+    font-size: 22px;
     letter-spacing: 0.14em;
     margin-bottom: 25px;
   }
@@ -2115,12 +2133,12 @@ body:has(.intro) {
     line-height: 0.88;
   }
   .hero-content > p {
-    font-size: 17px;
+    font-size: 22px;
     margin: 24px 0;
     max-width: 300px;
   }
   .hero .button {
-    font-size: 14px;
+    font-size: 22px;
     min-height: 47px;
     padding: 12px 15px;
     gap: 10px;
@@ -2129,7 +2147,7 @@ body:has(.intro) {
     gap: 8px;
   }
   .hero-disciplines {
-    font-size: 12px;
+    font-size: 22px;
     gap: 10px;
     margin-top: 25px;
     flex-wrap: wrap;
@@ -2144,11 +2162,11 @@ body:has(.intro) {
     padding: 8px 12px;
   }
   .hero-scoreboard strong {
-    font-size: 17px;
+    font-size: 22px;
   }
   .hero-scoreboard small,
   .hero-scoreboard > div {
-    font-size: 12px;
+    font-size: 22px;
   }
   .hero-bottom {
     bottom: 20px;
@@ -2157,11 +2175,11 @@ body:has(.intro) {
     display: none;
   }
   .hero-bottom a {
-    font-size: 12px;
+    font-size: 22px;
   }
   .broadcast-strip {
     padding: 13px 20px;
-    font-size: 15px;
+    font-size: 22px;
   }
   .broadcast-strip > span:nth-child(2) {
     display: none;
@@ -2187,10 +2205,10 @@ body:has(.intro) {
     gap: 8px;
   }
   .pending-stat small {
-    font-size: 12px;
+    font-size: 22px;
   }
   .stats > div > span {
-    font-size: 12px;
+    font-size: 22px;
   }
   .section {
     padding-block: 55px;
@@ -2205,13 +2223,13 @@ body:has(.intro) {
     font-size: 35px;
   }
   .section-head p {
-    font-size: 16px;
+    font-size: 22px;
   }
   .section-head .eyebrow {
-    font-size: 12px;
+    font-size: 22px;
   }
   .section-head > .text-link {
-    font-size: 14px;
+    font-size: 22px;
   }
   .discipline-grid {
     grid-template-columns: 1fr;
@@ -2225,7 +2243,7 @@ body:has(.intro) {
     font-size: 59px;
   }
   .discipline > .micro {
-    font-size: 12px;
+    font-size: 22px;
   }
   .journey {
     padding-top: 0;
@@ -2267,7 +2285,7 @@ body:has(.intro) {
     font-size: 25px;
   }
   .journey-stages button > span:last-child {
-    font-size: 12px;
+    font-size: 22px;
   }
   .stage-detail {
     padding: 24px;
@@ -2305,7 +2323,7 @@ body:has(.intro) {
   }
   .map-legend {
     gap: 12px;
-    font-size: 12px;
+    font-size: 22px;
   }
   .fixture-row {
     flex-direction: column;
@@ -2320,7 +2338,7 @@ body:has(.intro) {
     font-size: 55px;
   }
   .campus-inner .eyebrow {
-    font-size: 12px;
+    font-size: 22px;
   }
   .campus-benefits {
     padding-left: 0;
@@ -2361,10 +2379,10 @@ body:has(.intro) {
     gap: 10px;
   }
   .board-top > span:first-child {
-    font-size: 12px;
+    font-size: 22px;
   }
   .board-top select {
-    font-size: 13px;
+    font-size: 22px;
     max-width: 120px;
   }
   .table-scroll table {
@@ -2398,7 +2416,7 @@ body:has(.intro) {
     font-size: 44px;
   }
   .organizer-section .eyebrow {
-    font-size: 12px;
+    font-size: 22px;
   }
   .gallery-empty {
     align-items: flex-start;
@@ -2419,7 +2437,7 @@ body:has(.intro) {
     font-size: 42px;
   }
   .closing-cta .eyebrow {
-    font-size: 12px;
+    font-size: 22px;
   }
   .closing-cta .button-stack {
     margin-top: 25px;
@@ -2445,7 +2463,7 @@ body:has(.intro) {
     align-items: flex-start;
     flex-wrap: wrap;
     gap: 20px;
-    font-size: 12px;
+    font-size: 22px;
   }
   .footer-bottom > div {
     order: 3;
@@ -2460,10 +2478,10 @@ body:has(.intro) {
     font-size: 57px;
   }
   .page-hero p {
-    font-size: 17px;
+    font-size: 22px;
   }
   .page-hero .eyebrow {
-    font-size: 12px;
+    font-size: 22px;
   }
   .content-grid,
   .info-grid {
@@ -2480,7 +2498,7 @@ body:has(.intro) {
     grid-template-columns: repeat(2, 1fr);
   }
   .tier-grid h3 {
-    font-size: 21px;
+    font-size: 22px;
   }
   .logo-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -2502,7 +2520,7 @@ body:has(.intro) {
     margin-bottom: 12px;
   }
   .gallery-tile > span {
-    font-size: 13px;
+    font-size: 22px;
     padding: 10px;
   }
   .detail-list {
@@ -2512,7 +2530,7 @@ body:has(.intro) {
     gap: 6px;
   }
   .tabs button {
-    font-size: 13px;
+    font-size: 22px;
     padding: 9px 11px;
   }
 }
@@ -2524,7 +2542,7 @@ body:has(.intro) {
   justify-content: space-between;
   padding: 19px 0;
   border-bottom: 1px solid var(--line);
-  font-size: 17px;
+  font-size: 22px;
 }
 .contact-categories a > span {
   color: var(--orange);
@@ -2548,10 +2566,10 @@ body:has(.intro) {
   margin-bottom: 25px;
 }
 .collaboration-layout aside > p {
-  font-size: 17px;
+  font-size: 22px;
 }
 .collaboration-layout .benefits-list li {
-  font-size: 15px;
+  font-size: 22px;
   gap: 10px;
 }
 .review-note {
@@ -2561,10 +2579,10 @@ body:has(.intro) {
   margin-top: 35px;
 }
 .review-note .micro {
-  font-size: 12px;
+  font-size: 22px;
 }
 .review-note ol {
-  font-size: 15px;
+  font-size: 22px;
   color: var(--muted);
   padding-left: 16px;
   line-height: 2;
@@ -2576,14 +2594,14 @@ body:has(.intro) {
 }
 .form-top .micro {
   color: var(--orange);
-  font-size: 12px;
+  font-size: 22px;
 }
 .form-top h2 {
   font-size: 39px;
   margin: 14px 0;
 }
 .form-top p {
-  font-size: 15px;
+  font-size: 22px;
   margin-bottom: 30px;
 }
 .collaboration-form fieldset {
@@ -2593,7 +2611,7 @@ body:has(.intro) {
   border-top: 1px solid var(--line);
 }
 .collaboration-form legend {
-  font-size: 14px;
+  font-size: 22px;
   font-weight: 700;
   letter-spacing: 0.1em;
   padding: 0 15px 0 0;
@@ -2613,7 +2631,7 @@ body:has(.intro) {
 }
 .form-field label {
   display: block;
-  font-size: 15px;
+  font-size: 22px;
   font-weight: 500;
   margin-bottom: 8px;
 }
@@ -2622,7 +2640,7 @@ body:has(.intro) {
 }
 .form-field label small {
   color: var(--muted);
-  font-size: 13px;
+  font-size: 22px;
 }
 .form-field input,
 .form-field select,
@@ -2634,7 +2652,7 @@ body:has(.intro) {
   color: var(--text);
   background: #09111d;
   padding: 12px 14px;
-  font-size: 16px;
+  font-size: 22px;
   border-radius: 0;
   min-width: 0;
   color-scheme: dark;
@@ -2653,7 +2671,7 @@ body:has(.intro) {
 .field-error {
   display: block;
   color: #ffa38f;
-  font-size: 14px;
+  font-size: 22px;
   margin-top: 7px;
 }
 .upload-box {
@@ -2668,19 +2686,19 @@ body:has(.intro) {
   color: var(--orange);
 }
 .upload-box strong {
-  font-size: 15px;
+  font-size: 22px;
   display: block;
   word-break: break-word;
 }
 .upload-box small {
-  font-size: 13px;
+  font-size: 22px;
   color: var(--muted);
   display: block;
 }
 .upload-box input {
   border: 0;
   padding: 8px 0 0;
-  font-size: 13px;
+  font-size: 22px;
   background: transparent;
 }
 .upload-box input::file-selector-button {
@@ -2693,7 +2711,7 @@ body:has(.intro) {
 }
 .form-field .caption {
   display: block;
-  font-size: 13px;
+  font-size: 22px;
 }
 .honeypot {
   position: absolute;
@@ -2709,7 +2727,7 @@ body:has(.intro) {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  font-size: 14px;
+  font-size: 22px;
   color: var(--muted);
   margin: 15px 0;
   cursor: pointer;
@@ -2738,7 +2756,7 @@ body:has(.intro) {
   align-items: center;
   justify-content: center;
   gap: 7px;
-  font-size: 13px;
+  font-size: 22px;
   color: #7990a6;
   margin-top: 14px;
 }
@@ -2747,7 +2765,7 @@ body:has(.intro) {
   background: #ff6b2910;
   padding: 15px;
   color: #ffae94;
-  font-size: 16px;
+  font-size: 22px;
   margin-block: 20px;
 }
 .form-success {
@@ -2760,13 +2778,13 @@ body:has(.intro) {
   margin-bottom: 25px;
 }
 .form-success .eyebrow {
-  font-size: 12px;
+  font-size: 22px;
 }
 .form-success h2 {
   font-size: 50px;
 }
 .form-success p {
-  font-size: 17px;
+  font-size: 22px;
   margin-top: 25px;
 }
 .form-success dl {
@@ -2777,12 +2795,12 @@ body:has(.intro) {
   border-bottom: 1px solid var(--line);
 }
 .form-success dt {
-  font-size: 13px;
+  font-size: 22px;
   color: var(--muted);
 }
 .form-success dd {
   margin: 5px 0 0;
-  font-size: 17px;
+  font-size: 22px;
   overflow-wrap: anywhere;
 }
 .spinner {
@@ -2796,11 +2814,11 @@ body:has(.intro) {
   background: var(--panel);
 }
 .admin-login p {
-  font-size: 16px;
+  font-size: 22px;
   margin: 20px 0;
 }
 .admin-login label {
-  font-size: 15px;
+  font-size: 22px;
   display: block;
   margin-bottom: 10px;
 }
@@ -2814,7 +2832,7 @@ body:has(.intro) {
   margin-bottom: 20px;
 }
 .admin-toolbar .button {
-  font-size: 14px;
+  font-size: 22px;
   min-height: 42px;
 }
 .admin-detail {
@@ -2833,7 +2851,7 @@ body:has(.intro) {
 .audit-list {
   list-style: none;
   padding: 0;
-  font-size: 15px;
+  font-size: 22px;
   color: var(--muted);
 }
 .audit-list li {
@@ -2843,7 +2861,7 @@ body:has(.intro) {
 .audit-list time {
   display: block;
   color: var(--orange);
-  font-size: 13px;
+  font-size: 22px;
 }
 .admin-notice {
   border: 1px solid #67cfcf44;
@@ -2851,7 +2869,7 @@ body:has(.intro) {
   padding: 15px;
   color: var(--cyan);
   margin-top: 20px;
-  font-size: 16px;
+  font-size: 22px;
 }
 @keyframes spin {
   to {
@@ -2902,18 +2920,18 @@ body:has(.intro) {
     gap: 18px;
   }
   .form-field label {
-    font-size: 15px;
+    font-size: 22px;
   }
   .form-field input,
   .form-field textarea,
   .form-field select {
-    font-size: 18px;
+    font-size: 22px;
   }
   .form-top h2 {
     font-size: 33px;
   }
   .form-submit > .button {
-    font-size: 15px;
+    font-size: 22px;
     padding: 13px 15px;
     gap: 10px;
   }
@@ -2933,10 +2951,10 @@ body:has(.intro) {
     padding: 25px;
   }
   .collaboration-form legend {
-    font-size: 13px;
+    font-size: 22px;
   }
   .consents label {
-    font-size: 15px;
+    font-size: 22px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -2971,11 +2989,11 @@ body:has(.intro) {
   margin-bottom: 20px;
 }
 .partner-preview p {
-  font-size: 17px;
+  font-size: 22px;
 }
 .partner-preview > .micro {
   display: block;
-  font-size: 12px;
+  font-size: 22px;
   margin: 25px 0;
 }
 .partner-preview .text-link {
@@ -2993,17 +3011,17 @@ body:has(.intro) {
   margin-bottom: 15px;
 }
 .home-contact p {
-  font-size: 16px;
+  font-size: 22px;
   margin-bottom: 10px;
 }
 .home-contact .eyebrow {
-  font-size: 12px;
+  font-size: 22px;
 }
 .home-contact .micro {
-  font-size: 12px;
+  font-size: 22px;
 }
 .hero-content > p {
-  font-size: 17px;
+  font-size: 22px;
   max-width: 430px;
   line-height: 1.65;
 }
@@ -3017,7 +3035,7 @@ body:has(.intro) {
     padding-bottom: 45px;
   }
   .hero-content > p {
-    font-size: 16px;
+    font-size: 22px;
     max-width: 320px;
     line-height: 1.7;
   }
@@ -3089,41 +3107,41 @@ body:has(.intro) {
   }
 }
 
-/* Readable type scale based on roboticsir.com: 16–18px reading copy and 14px navigation. */
+/* The site uses a 22px minimum text size; display headings keep their hierarchy. */
 body {
-  font-size: 17px;
+  font-size: 22px;
 }
 .desktop-nav a {
-  font-size: 14px;
+  font-size: 22px;
 }
 .desktop-nav {
   gap: 17px;
 }
 .button,
 .text-link {
-  font-size: 16px;
+  font-size: 22px;
 }
 p {
-  font-size: 17px;
+  font-size: 22px;
 }
 .hero-content > p {
-  font-size: 18px;
+  font-size: 22px;
   max-width: 500px;
 }
 .section-head p,
 .page-hero > p {
-  font-size: 18px;
+  font-size: 22px;
   max-width: 700px;
 }
 .micro,
 .eyebrow {
-  font-size: 13px;
+  font-size: 22px;
   letter-spacing: 0.12em;
 }
 input,
 select,
 textarea {
-  font-size: 16px;
+  font-size: 22px;
 }
 .nav-top {
   gap: 20px;
@@ -3136,7 +3154,7 @@ textarea {
 }
 .organizer-logo > span:first-child {
   color: var(--muted);
-  font-size: 12px;
+  font-size: 22px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
@@ -3160,7 +3178,7 @@ textarea {
   padding: 22px;
 }
 .organizer-logo-prominent > span:first-child {
-  font-size: 14px;
+  font-size: 22px;
 }
 .organizer-art {
   padding: 35px;
@@ -3213,13 +3231,13 @@ textarea {
     width: 122px;
   }
   .nav-top .organizer-logo > span:first-child {
-    font-size: 10px;
+    font-size: 22px;
   }
   .organizer-logo-plate {
     padding: 6px;
   }
   .hero-content > p {
-    font-size: 17px;
+    font-size: 22px;
     max-width: 400px;
   }
   .hero-content {
@@ -3252,16 +3270,308 @@ textarea {
   .footer-top {
     grid-template-columns: 1fr;
   }
-  .intro-bot {
-    left: 47%;
-    transform: scale(0.8) rotateY(-20deg);
-  }
-  .intro-ball {
-    left: 20%;
-  }
 }
 @media (prefers-reduced-motion: reduce) {
   body:has(.intro) {
     overflow: auto;
+  }
+}
+
+/* Keep the enlarged text readable without squeezing navigation or clipping labels. */
+html {
+  scroll-padding-top: 165px;
+}
+p,
+li,
+label,
+small,
+summary,
+dt,
+dd,
+caption,
+th,
+td {
+  overflow-wrap: break-word;
+}
+.micro,
+.eyebrow {
+  letter-spacing: 0.055em;
+  line-height: 1.45;
+}
+.nav-top {
+  min-height: 110px;
+  height: auto;
+  padding-block: 12px;
+}
+.brand-type > span {
+  letter-spacing: 0.2em;
+}
+.organizer-logo {
+  width: 190px;
+}
+.organizer-logo > span:first-child {
+  letter-spacing: 0.03em;
+  line-height: 1.3;
+}
+.hero {
+  height: auto;
+  min-height: 1060px;
+  padding-bottom: 140px;
+}
+.hero-content {
+  padding-top: 195px;
+}
+.hero-content > p {
+  max-width: 600px;
+}
+.hero-bottom {
+  gap: 25px;
+  flex-wrap: wrap;
+  letter-spacing: 0.04em;
+}
+.hero-bottom a {
+  flex-wrap: wrap;
+}
+.hero-scoreboard {
+  max-width: 44%;
+}
+.broadcast-strip {
+  flex-wrap: wrap;
+  gap: 15px;
+}
+.broadcast-strip > span {
+  max-width: 100%;
+}
+.pending-stat {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+}
+.pending-stat small {
+  max-width: 170px;
+  letter-spacing: 0.03em;
+}
+.section-head > *,
+.content-grid > *,
+.collaboration-layout > *,
+.form-grid > * {
+  min-width: 0;
+}
+.stage-detail .text-link {
+  white-space: normal;
+}
+.stage-number {
+  width: 64px;
+  height: 64px;
+  padding: 8px;
+}
+.form-submit > span,
+.hero-disciplines > span {
+  flex-wrap: wrap;
+}
+.filter-bar label {
+  min-width: min(100%, 200px);
+  flex: 1 1 200px;
+}
+.filter-bar input,
+.filter-bar select {
+  max-width: 100%;
+}
+.contact-categories a {
+  gap: 18px;
+}
+.footer-top {
+  grid-template-columns: 1.3fr 1fr 1fr 1.3fr;
+  gap: 32px;
+}
+.footer-bottom {
+  gap: 25px;
+  flex-wrap: wrap;
+}
+.footer-bottom > div {
+  flex-wrap: wrap;
+}
+@media (max-width: 1600px) {
+  .desktop-nav {
+    display: none;
+  }
+  .menu-toggle {
+    display: inline-grid;
+  }
+  .nav-top > .organizer-logo {
+    margin-left: auto;
+  }
+}
+@media (min-width: 1601px) {
+  .desktop-nav {
+    gap: 14px;
+  }
+}
+@media (max-width: 1100px) {
+  .footer-top {
+    grid-template-columns: 1fr 1fr;
+  }
+  .hero-scoreboard {
+    position: relative;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    margin: 32px 40px 0 auto;
+    max-width: 450px;
+    width: fit-content;
+  }
+  .hero {
+    padding-bottom: 150px;
+  }
+  .journey-stages {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 28px;
+  }
+  .stage-detail {
+    flex-wrap: wrap;
+  }
+  .collaboration-layout {
+    grid-template-columns: 1fr;
+    gap: 35px;
+  }
+  .collaboration-layout aside {
+    position: static;
+  }
+}
+@media (max-width: 700px) {
+  .nav-top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+    padding-block: 12px;
+  }
+  .nav-top .brand {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .nav-top .menu-toggle {
+    grid-column: 2;
+    grid-row: 1;
+    width: 44px;
+    height: 44px;
+  }
+  .nav-top > .organizer-logo {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: auto;
+    margin-left: 0;
+  }
+  .nav-top .organizer-logo > span:first-child {
+    font-size: 22px;
+    white-space: nowrap;
+  }
+  .nav-top .organizer-logo-plate {
+    width: 145px;
+    padding: 7px;
+  }
+  .hero {
+    min-height: 0;
+    padding-bottom: 140px;
+  }
+  .hero-content {
+    padding-top: 190px;
+  }
+  .hero .eyebrow {
+    letter-spacing: 0.035em;
+  }
+  .hero-content > p {
+    max-width: 100%;
+  }
+  .hero .button-row,
+  .hero .button {
+    width: 100%;
+  }
+  .hero .button {
+    justify-content: space-between;
+  }
+  .hero-scoreboard {
+    margin: 32px 20px 0;
+    max-width: calc(100% - 40px);
+    width: auto;
+    transform: none;
+  }
+  .hero-scoreboard small {
+    letter-spacing: 0.04em;
+  }
+  .hero-disciplines {
+    gap: 15px;
+    letter-spacing: 0;
+  }
+  .hero-bottom {
+    bottom: 35px;
+  }
+  .page-hero {
+    padding-top: 190px;
+  }
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px 15px;
+  }
+  .stats > div {
+    padding: 0;
+    border-right: 0;
+    min-width: 0;
+  }
+  .pending-stat small {
+    max-width: 100%;
+  }
+  .journey-stages {
+    display: flex;
+  }
+  .journey-stages button {
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: 8px 15px;
+  }
+  .journey-track {
+    left: 32px;
+    height: 90%;
+  }
+  .journey-stages button > span:last-child {
+    letter-spacing: 0.02em;
+  }
+  .stage-detail,
+  .stage-specs {
+    display: block;
+  }
+  .stage-specs > div {
+    margin-top: 18px;
+  }
+  .stage-detail .text-link {
+    margin-top: 20px;
+  }
+  .footer-top,
+  .form-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .footer-top > div:last-child {
+    display: block;
+  }
+  .footer-top > div:last-child h4,
+  .footer-top > div:last-child p {
+    grid-column: auto;
+  }
+  .collaboration-form {
+    padding: 22px;
+  }
+  .collaboration-form legend {
+    letter-spacing: 0.03em;
+  }
+  .mobile-menu > a:not(.button) {
+    gap: 12px;
+  }
+  .button,
+  .text-link {
+    white-space: normal;
+  }
+  .status-tag {
+    white-space: normal;
   }
 }

@@ -85,6 +85,23 @@ test(
         const r = await fetch(origin + route);
         assert.equal(r.status, 200, route);
       }
+      const homepage = await (await fetch(origin)).text();
+      const gate = homepage.indexOf('id="intro-boot"');
+      assert.ok(
+        gate > 0 && gate < homepage.indexOf("</head>"),
+        "first-paint gate is in the head",
+      );
+      assert.ok(
+        gate < homepage.indexOf('class="navbar'),
+        "gate precedes visible website markup",
+      );
+      assert.match(homepage, /curtain-panel-left/);
+      assert.match(homepage, /curtain-title/);
+      assert.match(homepage, /robo-goal-event/);
+      assert.equal(
+        (await fetch(origin + "/images/robo-goal-event.webp")).status,
+        200,
+      );
       assert.equal((await fetch(origin + "/events/not-published")).status, 404);
       assert.equal((await fetch(origin + "/api/admin/requests")).status, 401);
       const id = randomUUID();
