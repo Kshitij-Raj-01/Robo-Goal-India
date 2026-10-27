@@ -37,7 +37,10 @@ export function createComponentCloud(
   );
   const ordered = [
     ...featured,
-    ...inventory.filter((part) => !featured.includes(part)),
+    // Static body hardware is batched for the shot: skip its emptied source groups.
+    ...inventory.filter(
+      (part) => !featured.includes(part) && part.mesh.children.length > 0,
+    ),
   ];
   const placements = [
     [-0.5, 0.5],
@@ -48,12 +51,24 @@ export function createComponentCloud(
     [0.42, -0.63],
   ];
   const loader = new T.TextureLoader();
+  const pending: Promise<unknown>[] = [];
   const art = ["arduino-uno", "esp32", "battery-pack", "motor-driver"];
   const instances = ordered.map((part, index) => {
     let model: T.Object3D = part.mesh.clone(true);
     const rendered = index < art.length;
     if (rendered) {
-      const texture = loader.load(`/images/components/${art[index]}.webp`);
+      let loaded!: () => void;
+      pending.push(
+        new Promise<void>((resolve) => {
+          loaded = resolve;
+        }),
+      );
+      const texture = loader.load(
+        `/images/components/${art[index]}.webp`,
+        loaded,
+        undefined,
+        loaded,
+      );
       texture.colorSpace = T.SRGBColorSpace;
       const plane = new T.Group();
       const aspect = [1.5, 1.2, 1.5, 720 / 658][index];
@@ -167,19 +182,19 @@ export function createComponentCloud(
           x: target.x,
           y: target.y,
           z: target.z,
-          duration: 0.95,
+          duration: 1.8,
           ease: "power3.out",
         },
         start,
       )
       .to(
         display.rotation,
-        { ...rotation, duration: 1.05, ease: "power2.out" },
+        { ...rotation, duration: 1.8, ease: "power2.out" },
         start,
       )
       .to(
         display.scale,
-        { x: scale, y: scale, z: scale, duration: 0.95, ease: "power2.out" },
+        { x: scale, y: scale, z: scale, duration: 1.8, ease: "power2.out" },
         start,
       )
       // A slow drift and perspective push gives time to see the close-up hardware.
@@ -192,7 +207,7 @@ export function createComponentCloud(
           duration: 1.5,
           ease: "sine.inOut",
         },
-        start + 0.95,
+        start + 1.8,
       )
       .to(
         display.rotation,
@@ -202,8 +217,8 @@ export function createComponentCloud(
           duration: 1.5,
           ease: "sine.inOut",
         },
-        start + 0.95,
+        start + 1.8,
       );
   });
-  return { cloud, fill };
+  return { cloud, fill, ready: Promise.all(pending) };
 }

@@ -1569,13 +1569,12 @@ footer .footer-top .text-link {
   z-index: 2147483000;
   background: #030910;
   overflow: hidden;
-  animation: intro-escape 0s 15s forwards;
+  animation: intro-escape 0s 22s forwards;
 }
 html[data-intro] body {
   overflow: hidden;
 }
-.intro-canvas,
-.intro-standby {
+.intro-canvas {
   position: absolute;
   inset: 0;
 }
@@ -1584,60 +1583,23 @@ html[data-intro] body {
   width: 100%;
   height: 100%;
 }
+.intro-ball-flight {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+.intro-ball-flight canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
 .intro-canvas {
   opacity: 0;
   transition: opacity 0.14s linear;
 }
-.intro-standby {
-  overflow: hidden;
-  perspective: 650px;
-  background: radial-gradient(ellipse at 55% 60%, #16352e, #030910 65%);
-  transition:
-    opacity 0.14s linear,
-    visibility 0s 0.14s;
-}
-.intro-standby::before {
-  content: "";
-  position: absolute;
-  inset: 28% -50% -70%;
-  transform: rotateX(68deg);
-  background:
-    linear-gradient(
-      90deg,
-      transparent 49.85%,
-      #a4c8bb55 49.9% 50.1%,
-      transparent 50.15%
-    ),
-    repeating-linear-gradient(0deg, #15372e22 0 65px, #071b1522 65px 130px);
-  border: 1px solid #a4c8bb44;
-}
-.intro-lead-in-ball {
-  position: absolute;
-  top: 54%;
-  left: calc(50% - 48px);
-  width: 96px;
-  height: 96px;
-  border-radius: 50%;
-  background: url("/images/robo-goal-india-logo-dark.webp") 52.803% 52.98% /
-    1200% 225.833% no-repeat;
-  box-shadow: 0 18px 22px -12px #0009;
-  animation: intro-football-roll 3.5s linear both;
-  will-change: transform;
-}
-@keyframes intro-football-roll {
-  from {
-    transform: translate3d(52vw, -6vh, 0) rotate(180deg) scale(0.65);
-  }
-  to {
-    transform: translate3d(-28vw, 7vh, 0) rotate(-280deg) scale(1.15);
-  }
-}
 .intro-ready {
   animation: none;
-}
-.intro-ready .intro-standby {
-  opacity: 0;
-  visibility: hidden;
 }
 .intro-ready .intro-canvas {
   opacity: 1;
@@ -1658,7 +1620,7 @@ html[data-intro] body {
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  background: radial-gradient(ellipse at 50% 50%, #26051dba, transparent 68%);
+  background: radial-gradient(ellipse at 50% 50%, #02091dba, transparent 68%);
   transition: opacity 0.4s ease;
 }
 .intro-revealing .intro-curtain::before {
@@ -1671,23 +1633,24 @@ html[data-intro] body {
   width: 50.5%;
   overflow: hidden;
   background:
-    radial-gradient(ellipse at 50% 0%, #ffc65c77, transparent 58%),
-    linear-gradient(180deg, #ff741a33, transparent 35%, #53031f77 100%),
+    radial-gradient(ellipse at 15% 0%, #48d9ff55, transparent 52%),
+    radial-gradient(ellipse at 90% 0%, #ffc65c55, transparent 48%),
+    linear-gradient(180deg, #152c5e22, transparent 35%, #02091dcc 100%),
     repeating-linear-gradient(
       90deg,
-      #65051f 0%,
-      #bc1030 4%,
-      #ff5634 8%,
-      #f09232 10%,
-      #e52a2b 13%,
-      #8b0625 17%,
-      #d81b32 21%
+      #040d25 0%,
+      #102451 4%,
+      #1c3971 8%,
+      #284779 10%,
+      #132c57 13%,
+      #050e28 17%,
+      #142c58 21%
     );
   border-bottom: 8px solid #ffc65a;
   box-shadow:
     0 18px 28px #0008,
     inset 0 -4px 0 #fff1ab,
-    inset -18px 0 30px #51051d88;
+    inset -18px 0 30px #02091d88;
   will-change: transform;
 }
 .curtain-panel-left {
@@ -1704,11 +1667,12 @@ html[data-intro] body {
   background: linear-gradient(
     110deg,
     transparent 34%,
-    #ffe6a644 49%,
+    #64dfff44 43%,
+    #ffe6a655 51%,
     transparent 63%
   );
   transform: translateX(-120%);
-  animation: curtain-gold-sweep 1.8s ease-in-out both paused;
+  animation: curtain-gold-sweep 5s ease-in-out both paused;
   will-change: transform;
 }
 .curtain-panel-right::before {
@@ -1730,6 +1694,10 @@ html[data-intro] body {
   position: absolute;
   inset: 0;
   background:
+    radial-gradient(circle, #55d9ffcc 0 2px, transparent 2.5px) 22px 35px / 97px
+      143px,
+    radial-gradient(circle, #ffc65aaa 0 1.5px, transparent 2px) 10px 7px / 131px
+      113px,
     radial-gradient(circle, #ffe8a4bb 0 1px, transparent 1.6px) 0 100% / 15px
       15px repeat-x,
     repeating-linear-gradient(0deg, #ffdba008 0 1px, transparent 1px 4px);
@@ -1754,7 +1722,6 @@ html[data-intro] body {
   height: auto;
   visibility: hidden;
 }
-.curtain-football,
 .curtain-logo-piece {
   position: absolute;
   inset: 0;
@@ -1762,9 +1729,6 @@ html[data-intro] body {
     no-repeat;
   opacity: 0;
   will-change: transform, opacity;
-}
-.curtain-football {
-  z-index: 3;
 }
 @keyframes intro-escape {
   to {

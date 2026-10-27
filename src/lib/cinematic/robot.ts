@@ -2,7 +2,10 @@ import * as T from "three";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 
-export function createRobot({ assembledOnly = false } = {}) {
+export function createRobot({
+  assembledOnly = false,
+  retainParts = false,
+} = {}) {
   const root = new T.Group();
   const parts: { mesh: T.Group; target: T.Vector3; rotation: T.Euler }[] = [];
   const wheels: T.Group[] = [];
@@ -369,7 +372,7 @@ export function createRobot({ assembledOnly = false } = {}) {
   // Merge the fine hardware per material inside each detachable assembly.
   // The complete bot keeps its detail without hundreds of draw calls per frame.
   let mergeTargets = parts.map((assembly) => assembly.mesh);
-  if (assembledOnly) {
+  if (assembledOnly && !retainParts) {
     const body = new T.Group();
     body.name = "Assembled robot body";
     root.add(body);

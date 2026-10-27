@@ -97,7 +97,8 @@ test(
       );
       assert.match(homepage, /curtain-panel-left/);
       assert.match(homepage, /curtain-logo/);
-      assert.match(homepage, /curtain-football/);
+      assert.match(homepage, /intro-ball-flight/);
+      assert.doesNotMatch(homepage, /intro-lead-in-ball|intro-standby/);
       assert.match(homepage, /data-logo-piece="goal-o"/);
       assert.doesNotMatch(
         homepage,

@@ -6,6 +6,8 @@ import { createGoalCelebration } from "./cinematic/celebration";
 import { addCurtainReveal } from "./cinematic/curtain";
 import { INTRO_TIMING } from "./intro-config";
 import { createCrowd } from "./cinematic/crowd";
+import { createComponentCloud } from "./cinematic/component-cloud";
+import { createScoredBallFlight } from "./cinematic/scored-ball";
 
 export function startScene(
   host: HTMLDivElement,
@@ -39,7 +41,7 @@ export function startScene(
   renderer.toneMapping = T.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 0.95;
   host.appendChild(renderer.domElement);
-  // One direct render pass: no reflection bake, bloom, shadow-map or second scene.
+  // Direct stadium rendering: no reflection bake, bloom or shadow maps.
   scene.add(new T.HemisphereLight(0xc5dcf1, 0x193023, 2.1));
   const key = new T.DirectionalLight(0xffecd9, 3);
   key.position.set(-3, 7, 4);
@@ -171,48 +173,48 @@ export function startScene(
   const shotEnd = new T.Vector3(0.65, 0.62, -8.4);
   host.dataset.stage = "run-up";
   timeline
-    .to(robot.position, { z: 2.55, duration: 0.4, ease: "power2.out" }, 0)
-    .to(robot.position, { z: 2.28, duration: 1.05, ease: "none" }, 0.4)
+    .to(robot.position, { z: 2.55, duration: 0.8, ease: "power2.out" }, 0)
+    .to(robot.position, { z: 2.28, duration: 1.9, ease: "none" }, 0.8)
     .to(
       camera.position,
       {
         x: portrait ? 0.9 : 4.3,
         y: 2.8,
         z: portrait ? 8.5 : 6.2,
-        duration: 1.7,
+        duration: 2.4,
         ease: "sine.inOut",
       },
       0,
     )
     .to(
       cameraTarget,
-      { x: 0.1, y: 0.8, z: -3.4, duration: 1.7, ease: "sine.inOut" },
+      { x: 0.1, y: 0.8, z: -3.4, duration: 2.4, ease: "sine.inOut" },
       0,
     )
-    .to(kicker.position, { x: -0.7, duration: 0.1, ease: "power2.in" }, 0.29)
-    .to(kicker.position, { x: -1.16, duration: 0.09, ease: "power3.in" }, 0.39)
+    .to(kicker.position, { x: -0.7, duration: 0.2, ease: "power2.in" }, 0.6)
+    .to(kicker.position, { x: -1.16, duration: 0.2, ease: "power3.in" }, 0.8)
     .call(
       () => {
         host.dataset.stage = "shot";
       },
       [],
-      0.48,
+      1,
     )
-    .to(kicker.position, { x: -0.88, duration: 0.18, ease: "power2.out" }, 0.5)
+    .to(kicker.position, { x: -0.88, duration: 0.35, ease: "power2.out" }, 1.05)
     .to(
       shot,
       {
         progress: 1,
-        duration: goalTime - 0.48,
+        duration: goalTime - 1,
         ease: "none",
         onUpdate: () => {
           ball.position.lerpVectors(shotStart, shotEnd, shot.progress);
           ball.position.y += Math.sin(shot.progress * Math.PI) * 0.8;
         },
       },
-      0.48,
+      1,
     )
-    .to(ball.rotation, { x: -15, z: 1.3, duration: 0.57, ease: "none" }, 0.48)
+    .to(ball.rotation, { x: -15, z: 1.3, duration: 1, ease: "none" }, 1)
     .call(
       () => {
         host.dataset.stage = "goal";
@@ -240,10 +242,31 @@ export function startScene(
   wheels.forEach((wheel) => {
     timeline.to(
       wheel.rotation,
-      { z: Math.PI * 3.2, duration: 1.45, ease: "power1.out" },
+      { z: Math.PI * 3.2, duration: 2.7, ease: "power1.out" },
       0,
     );
   });
+  const components = createComponentCloud(
+    scene,
+    camera,
+    robotData,
+    timeline,
+    INTRO_TIMING.parts,
+  );
+  timeline.call(
+    () => {
+      host.dataset.stage = "parts-scatter";
+    },
+    [],
+    INTRO_TIMING.parts,
+  );
+  const scoredBall = createScoredBallFlight(
+    host,
+    scene,
+    camera,
+    ball,
+    timeline,
+  );
   addCurtainReveal(host, timeline);
   timeline.call(
     () => {
@@ -264,11 +287,13 @@ export function startScene(
   });
   let lastCrowdUpdate = -1;
   const render = () => {
-    // CSS/GSAP alone runs once fabric covers the pitch; no hidden GPU work.
+    if (disposed || document.hidden) return;
+    scoredBall.render();
+    // Stop the stadium behind closed fabric; only the two-mesh ball stays live.
     if (
       !disposed &&
       !document.hidden &&
-      timeline.time() < INTRO_TIMING.curtainDown + 0.42
+      timeline.time() < INTRO_TIMING.curtainDown + 1
     ) {
       camera.lookAt(cameraTarget);
       celebration.update(timeline.time());
@@ -301,8 +326,15 @@ export function startScene(
   host.dataset.sceneSetupMs = String(
     Math.round(performance.now() - preparationStarted),
   );
-  renderer
-    .compileAsync(scene, camera)
+  // Compile the otherwise-hidden cloud too, after its local artwork loads.
+  Promise.all([components.ready, scoredBall.ready])
+    .then(() => {
+      if (disposed) return;
+      components.cloud.visible = true;
+      return renderer.compileAsync(scene, camera).finally(() => {
+        components.cloud.visible = false;
+      });
+    })
     .then(() => {
       if (disposed) return;
       render();
@@ -326,11 +358,13 @@ export function startScene(
     camera.zoom = Math.min(1, Math.max(0.5, camera.aspect / 1.35));
     camera.updateProjectionMatrix();
     renderer.setSize(host.clientWidth, host.clientHeight);
+    scoredBall.resize();
   };
   window.addEventListener("resize", resize);
   return () => {
     disposed = true;
     timeline.kill();
+    scoredBall.dispose();
     celebration.dispose();
     crowd.dispose();
     document.removeEventListener("visibilitychange", onVisibilityChange);

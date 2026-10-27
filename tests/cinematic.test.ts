@@ -33,7 +33,9 @@ test("assembled-shot robot keeps its bounds and moving parts with a smaller geom
   try {
     const detailed = createRobot();
     const assembled = createRobot({ assembledOnly: true });
-    roots.push(detailed.root, assembled.root);
+    const detachable = createRobot({ assembledOnly: true, retainParts: true });
+    roots.push(detailed.root, assembled.root, detachable.root);
+    assert.ok(detachable.parts.every((part) => part.mesh.children.length > 0));
     assert.equal(assembled.wheels.length, 4);
     assert.ok(assembled.root.getObjectByName("Assembled robot body"));
     assert.ok(assembled.root.children.includes(assembled.kicker));
@@ -52,6 +54,7 @@ test("assembled-shot robot keeps its bounds and moving parts with a smaller geom
     assert.ok(
       countVertices(assembled.root) < countVertices(detailed.root) * 0.5,
     );
+    assert.ok(countVertices(detachable.root) < countVertices(detailed.root) * 0.5);
   } finally {
     if (previousDocument)
       Object.defineProperty(globalThis, "document", previousDocument);

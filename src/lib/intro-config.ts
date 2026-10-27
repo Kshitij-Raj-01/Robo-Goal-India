@@ -1,10 +1,10 @@
 /** Runs in the document head, before the navbar or homepage can be painted. */
-export const INTRO_BOOT_SCRIPT = `(function(){try{if(location.pathname!=="/"||matchMedia("(prefers-reduced-motion: reduce)").matches)return;document.documentElement.dataset.intro="pending";setTimeout(function(){if(document.documentElement.dataset.intro==="pending")delete document.documentElement.dataset.intro},15000)}catch(e){}})();`;
+export const INTRO_BOOT_SCRIPT = `(function(){try{if(location.pathname!=="/"||matchMedia("(prefers-reduced-motion: reduce)").matches)return;document.documentElement.dataset.intro="pending";setTimeout(function(){if(document.documentElement.dataset.intro==="pending")delete document.documentElement.dataset.intro},22000)}catch(e){}})();`;
 
 export const INTRO_CRITICAL_CSS = `html[data-intro="pending"] body{background:#030910}html[data-intro="pending"] .navbar,html[data-intro="pending"] .skip-link,html[data-intro="pending"] footer,html[data-intro="pending"] #main>:not(.intro){visibility:hidden}html[data-intro] body{overflow:hidden}.intro{position:fixed;inset:0;z-index:2147483000;background:#030910;overflow:hidden}.intro-revealing{background:transparent}`;
 
-export const INTRO_PREPARATION_TIMEOUT_MS = 3500;
-export const INTRO_PLAYBACK_TIMEOUT_MS = 6000;
+export const INTRO_PREPARATION_TIMEOUT_MS = 8000;
+export const INTRO_PLAYBACK_TIMEOUT_MS = 16000;
 /** Football in the existing transparent 1440 × 271 dark-theme wordmark. */
 export const INTRO_LOGO_BALL = {
   x: 757 / 1440,
@@ -25,12 +25,14 @@ export const INTRO_LOGO_PIECES = [
   { id: "india", left: 74, right: 100, x: 0.35, y: 0.12, rotate: 16 },
 ] as const;
 export const INTRO_TIMING = {
-  goal: 1.05,
-  curtainDown: 1.35,
-  football: 1.82,
-  logo: 2.4,
-  assembled: 3.15,
-  scatter: 3.4,
-  curtainOpen: 3.92,
-  end: 4.6,
+  goal: 2,
+  parts: 2.7,
+  ballFlight: 5.2,
+  curtainDown: 5.6,
+  football: 7.8,
+  logo: 7.9,
+  assembled: 9.25,
+  scatter: 10,
+  curtainOpen: 11,
+  end: 12.3,
 } as const;

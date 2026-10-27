@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import {
   INTRO_PLAYBACK_TIMEOUT_MS,
   INTRO_PREPARATION_TIMEOUT_MS,
-  INTRO_LOGO_BALL,
   INTRO_LOGO_PIECES,
 } from "@/lib/intro-config";
 
@@ -89,10 +88,8 @@ export function Intro() {
         href="/images/robo-goal-india-logo-dark.webp"
         fetchPriority="high"
       />
-      <div className="intro-standby">
-        <div className="intro-lead-in-ball" />
-      </div>
       <div className="intro-canvas" ref={host} />
+      <div className="intro-ball-flight" />
       <div className="intro-curtain">
         <div className="curtain-panel curtain-panel-left" />
         <div className="curtain-panel curtain-panel-right" />
@@ -106,13 +103,6 @@ export function Intro() {
               alt="Robo Goal India"
               width={1440}
               height={271}
-            />
-            <div
-              className="curtain-football"
-              style={{
-                clipPath: `ellipse(${INTRO_LOGO_BALL.radiusX * 100}% ${INTRO_LOGO_BALL.radiusY * 100}% at ${INTRO_LOGO_BALL.x * 100}% ${INTRO_LOGO_BALL.y * 100}%)`,
-                transformOrigin: `${INTRO_LOGO_BALL.x * 100}% ${INTRO_LOGO_BALL.y * 100}%`,
-              }}
             />
             {INTRO_LOGO_PIECES.map((piece) => (
               <div
