@@ -1584,15 +1584,63 @@ html[data-intro] body {
   width: 100%;
   height: 100%;
 }
+.intro-canvas {
+  opacity: 0;
+  transition: opacity 0.14s linear;
+}
 .intro-standby {
   overflow: hidden;
-  background: #030910 url("/images/intro-poster.webp") center / cover no-repeat;
+  perspective: 650px;
+  background: radial-gradient(ellipse at 55% 60%, #16352e, #030910 65%);
+  transition:
+    opacity 0.14s linear,
+    visibility 0s 0.14s;
+}
+.intro-standby::before {
+  content: "";
+  position: absolute;
+  inset: 28% -50% -70%;
+  transform: rotateX(68deg);
+  background:
+    linear-gradient(
+      90deg,
+      transparent 49.85%,
+      #a4c8bb55 49.9% 50.1%,
+      transparent 50.15%
+    ),
+    repeating-linear-gradient(0deg, #15372e22 0 65px, #071b1522 65px 130px);
+  border: 1px solid #a4c8bb44;
+}
+.intro-lead-in-ball {
+  position: absolute;
+  top: 54%;
+  left: calc(50% - 48px);
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: url("/images/robo-goal-india-logo-dark.webp") 52.803% 52.98% /
+    1200% 225.833% no-repeat;
+  box-shadow: 0 18px 22px -12px #0009;
+  animation: intro-football-roll 3.5s linear both;
+  will-change: transform;
+}
+@keyframes intro-football-roll {
+  from {
+    transform: translate3d(52vw, -6vh, 0) rotate(180deg) scale(0.65);
+  }
+  to {
+    transform: translate3d(-28vw, 7vh, 0) rotate(-280deg) scale(1.15);
+  }
 }
 .intro-ready {
   animation: none;
 }
 .intro-ready .intro-standby {
+  opacity: 0;
   visibility: hidden;
+}
+.intro-ready .intro-canvas {
+  opacity: 1;
 }
 .intro-revealing {
   background: transparent;
@@ -1602,29 +1650,44 @@ html[data-intro] body {
   inset: 0;
   visibility: hidden;
   z-index: 2;
-  perspective: 1000px;
   will-change: transform;
+}
+.intro-curtain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 50%, #26051dba, transparent 68%);
+  transition: opacity 0.4s ease;
+}
+.intro-revealing .intro-curtain::before {
+  opacity: 0;
 }
 .curtain-panel {
   position: absolute;
   top: -2px;
   bottom: -4px;
   width: 50.5%;
+  overflow: hidden;
   background:
-    linear-gradient(180deg, #ffffff88, transparent 30%, #e4a46b44 100%),
+    radial-gradient(ellipse at 50% 0%, #ffc65c77, transparent 58%),
+    linear-gradient(180deg, #ff741a33, transparent 35%, #53031f77 100%),
     repeating-linear-gradient(
       90deg,
-      #fdf9f2 0%,
-      #fffdf9 4%,
-      #ffe5cb 8%,
-      #ffce9e 12%,
-      #e4ac7c 17%,
-      #fff3e5 21%
+      #65051f 0%,
+      #bc1030 4%,
+      #ff5634 8%,
+      #f09232 10%,
+      #e52a2b 13%,
+      #8b0625 17%,
+      #d81b32 21%
     );
-  border-bottom: 5px solid #f49342;
+  border-bottom: 8px solid #ffc65a;
   box-shadow:
-    0 22px 35px #6b3c2a44,
-    inset -18px 0 30px #b56d3a22;
+    0 18px 28px #0008,
+    inset 0 -4px 0 #fff1ab,
+    inset -18px 0 30px #51051d88;
   will-change: transform;
 }
 .curtain-panel-left {
@@ -1634,16 +1697,43 @@ html[data-intro] body {
   right: 0;
   transform-origin: right center;
 }
+.curtain-panel::before {
+  content: "";
+  position: absolute;
+  inset: -5% -30%;
+  background: linear-gradient(
+    110deg,
+    transparent 34%,
+    #ffe6a644 49%,
+    transparent 63%
+  );
+  transform: translateX(-120%);
+  animation: curtain-gold-sweep 1.8s ease-in-out both paused;
+  will-change: transform;
+}
+.curtain-panel-right::before {
+  animation-direction: reverse;
+}
+.curtain-lit .curtain-panel::before {
+  animation-play-state: running;
+}
+@keyframes curtain-gold-sweep {
+  from {
+    transform: translateX(-120%);
+  }
+  to {
+    transform: translateX(120%);
+  }
+}
 .curtain-panel::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    #ffffff04 0 1px,
-    transparent 1px 4px
-  );
-  opacity: 0.45;
+  background:
+    radial-gradient(circle, #ffe8a4bb 0 1px, transparent 1.6px) 0 100% / 15px
+      15px repeat-x,
+    repeating-linear-gradient(0deg, #ffdba008 0 1px, transparent 1px 4px);
+  opacity: 0.75;
 }
 .curtain-brand {
   position: absolute;
@@ -1651,46 +1741,30 @@ html[data-intro] body {
   display: grid;
   place-items: center;
   opacity: 0;
-  filter: drop-shadow(0 12px 24px #9b5e291f);
+  z-index: 2;
 }
 .curtain-logo-stage {
   position: relative;
-  width: min(1120px, 94%);
+  width: min(1100px, 92%);
+  aspect-ratio: 1440 / 271;
 }
-.curtain-logo {
+.curtain-logo-source {
   display: block;
   width: 100%;
   height: auto;
+  visibility: hidden;
 }
-.curtain-portal-mouth {
-  position: absolute;
-  left: 56.5642%;
-  top: 53.1532%;
-  width: 6.704%;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  opacity: 0;
-  background: radial-gradient(
-    circle at 50% 50%,
-    #020710,
-    #192e3d 70%,
-    #f79337 96%
-  );
-  box-shadow:
-    0 0 0 3px #ffad63,
-    0 0 30px #fa9a4c99;
-}
-.curtain-portal-canvas {
+.curtain-football,
+.curtain-logo-piece {
   position: absolute;
   inset: 0;
-  z-index: 3;
-  pointer-events: none;
+  background: url("/images/robo-goal-india-logo-dark.webp") center / 100% 100%
+    no-repeat;
+  opacity: 0;
+  will-change: transform, opacity;
 }
-.curtain-portal-canvas canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
+.curtain-football {
+  z-index: 3;
 }
 @keyframes intro-escape {
   to {

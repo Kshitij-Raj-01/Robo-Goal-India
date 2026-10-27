@@ -1,4 +1,5 @@
 import * as T from "three";
+import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 
 // Truncated icosahedron: twelve pentagons and twenty hexagons, projected onto a sphere.
 export function createFootball() {
@@ -22,10 +23,12 @@ export function createFootball() {
   }
   ico.dispose();
   const white = new T.MeshStandardMaterial({
+    side: T.DoubleSide,
     color: 0xf1eee7,
     roughness: 0.72,
   });
   const black = new T.MeshStandardMaterial({
+    side: T.DoubleSide,
     color: 0x10151c,
     roughness: 0.68,
   });
@@ -57,9 +60,7 @@ export function createFootball() {
     g.setAttribute("position", new T.Float32BufferAttribute(data, 3));
     g.computeVertexNormals();
     // Winding differs between the pentagon and hexagon construction.
-    const m = material.clone();
-    m.side = T.DoubleSide;
-    const mesh = new T.Mesh(g, m);
+    const mesh = new T.Mesh(g, material);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
     root.add(mesh);
@@ -90,7 +91,21 @@ export function createFootball() {
     panel(points, black);
   });
   const core = new T.Mesh(new T.SphereGeometry(0.368, 32, 24), black);
+  core.geometry.deleteAttribute("uv");
   root.add(core);
-  white.dispose();
+  // The 32 stitched panels retain their geometry but need only two draw calls.
+  const panels = [...root.children] as T.Mesh[];
+  root.clear();
+  for (const material of [white, black]) {
+    const geometries = panels
+      .filter((panel) => panel.material === material)
+      .map((panel) =>
+        panel.geometry.index ? panel.geometry.toNonIndexed() : panel.geometry,
+      );
+    const merged = mergeGeometries(geometries);
+    geometries.forEach((geometry) => geometry.dispose());
+    if (merged) root.add(new T.Mesh(merged, material));
+  }
+  panels.forEach((panel) => panel.geometry.dispose());
   return root;
 }

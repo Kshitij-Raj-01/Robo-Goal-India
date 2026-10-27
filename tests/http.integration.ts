@@ -97,7 +97,12 @@ test(
       );
       assert.match(homepage, /curtain-panel-left/);
       assert.match(homepage, /curtain-logo/);
-      assert.match(homepage, /curtain-portal-canvas/);
+      assert.match(homepage, /curtain-football/);
+      assert.match(homepage, /data-logo-piece="goal-o"/);
+      assert.doesNotMatch(
+        homepage,
+        /curtain-portal-canvas|images\/components\/.*?rel="preload"/,
+      );
       assert.match(homepage, /robo-goal-hero-cgi/);
       assert.match(homepage, /robo-goal-india-logo-dark/);
       assert.match(homepage, /robotic-sir-logo-dark/);

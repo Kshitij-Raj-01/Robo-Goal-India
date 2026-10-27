@@ -4,6 +4,88 @@ import { existsSync, statSync } from "node:fs";
 import * as T from "three";
 import { createCrowd } from "../src/lib/cinematic/crowd";
 import { createScatterAccessories } from "../src/lib/cinematic/scatter-accessories";
+import { createFootball } from "../src/lib/cinematic/football";
+import { createRobot } from "../src/lib/cinematic/robot";
+
+test("assembled-shot robot keeps its bounds and moving parts with a smaller geometry budget", () => {
+  const previousDocument = Object.getOwnPropertyDescriptor(
+    globalThis,
+    "document",
+  );
+  Object.defineProperty(globalThis, "document", {
+    configurable: true,
+    value: {
+      createElement: () => ({
+        width: 0,
+        height: 0,
+        getContext: () => ({
+          fillRect() {},
+          beginPath() {},
+          moveTo() {},
+          lineTo() {},
+          stroke() {},
+          fillText() {},
+        }),
+      }),
+    },
+  });
+  const roots: T.Group[] = [];
+  try {
+    const detailed = createRobot();
+    const assembled = createRobot({ assembledOnly: true });
+    roots.push(detailed.root, assembled.root);
+    assert.equal(assembled.wheels.length, 4);
+    assert.ok(assembled.root.getObjectByName("Assembled robot body"));
+    assert.ok(assembled.root.children.includes(assembled.kicker));
+    const detailedBounds = new T.Box3().setFromObject(detailed.root);
+    const assembledBounds = new T.Box3().setFromObject(assembled.root);
+    assert.ok(detailedBounds.min.distanceTo(assembledBounds.min) < 0.02);
+    assert.ok(detailedBounds.max.distanceTo(assembledBounds.max) < 0.02);
+    const countVertices = (root: T.Group) => {
+      let count = 0;
+      root.traverse((object) => {
+        if (object instanceof T.Mesh)
+          count += object.geometry.attributes.position.count;
+      });
+      return count;
+    };
+    assert.ok(
+      countVertices(assembled.root) < countVertices(detailed.root) * 0.5,
+    );
+  } finally {
+    if (previousDocument)
+      Object.defineProperty(globalThis, "document", previousDocument);
+    else Reflect.deleteProperty(globalThis, "document");
+    const materials = new Set<T.Material>();
+    const maps = new Set<T.Texture>();
+    roots.forEach((root) =>
+      root.traverse((object) => {
+        if (!(object instanceof T.Mesh)) return;
+        object.geometry.dispose();
+        for (const material of Array.isArray(object.material)
+          ? object.material
+          : [object.material]) {
+          materials.add(material);
+          if ("map" in material && material.map instanceof T.Texture)
+            maps.add(material.map);
+        }
+      }),
+    );
+    maps.forEach((map) => map.dispose());
+    materials.forEach((material) => material.dispose());
+  }
+});
+
+test("the detailed stitched football is batched into two meshes", () => {
+  const football = createFootball();
+  assert.equal(football.children.length, 2);
+  football.children.forEach((object) => {
+    const mesh = object as T.Mesh<T.BufferGeometry, T.Material>;
+    assert.ok(mesh.geometry.attributes.position.count > 100);
+    mesh.geometry.dispose();
+    mesh.material.dispose();
+  });
+});
 
 test("animated crowd uses bounded instancing and reacts to the goal", () => {
   const scene = new T.Scene();

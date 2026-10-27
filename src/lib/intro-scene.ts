@@ -1,21 +1,19 @@
 import * as T from "three";
 import { gsap } from "gsap";
-import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
-import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
-import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
-import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
-import { createAtmosphere } from "./cinematic/atmosphere";
-import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { createRobot } from "./cinematic/robot";
 import { createFootball } from "./cinematic/football";
 import { createGoalCelebration } from "./cinematic/celebration";
-import { createComponentCloud } from "./cinematic/component-cloud";
 import { addCurtainReveal } from "./cinematic/curtain";
 import { INTRO_TIMING } from "./intro-config";
 import { createCrowd } from "./cinematic/crowd";
-import { createLogoPortal } from "./cinematic/logo-portal";
 
-export function startScene(host: HTMLDivElement, onComplete?: () => void) {
+export function startScene(
+  host: HTMLDivElement,
+  onComplete?: () => void,
+  onReady?: () => void,
+) {
+  const preparationStarted = performance.now();
+  let disposed = false;
   const scene = new T.Scene();
   scene.background = new T.Color(0x030910);
   scene.fog = new T.FogExp2(0x06101b, 0.045);
@@ -33,35 +31,23 @@ export function startScene(host: HTMLDivElement, onComplete?: () => void) {
   camera.updateProjectionMatrix();
   camera.lookAt(cameraTarget);
   const renderer = new T.WebGLRenderer({
-    alpha: true,
     antialias: true,
     powerPreference: "high-performance",
   });
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.25));
   renderer.setSize(host.clientWidth, host.clientHeight);
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = T.PCFShadowMap;
   renderer.toneMapping = T.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 0.95;
   host.appendChild(renderer.domElement);
-  const pmrem = new T.PMREMGenerator(renderer);
-  const room = new RoomEnvironment();
-  const env = pmrem.fromScene(room, 0.04);
-  scene.environment = env.texture;
-  scene.environmentIntensity = 0.65;
-  room.dispose();
-  pmrem.dispose();
-  scene.add(new T.HemisphereLight(0x8eadd1, 0x07170f, 0.6));
-  const key = new T.SpotLight(0xffecd9, 80, 35, Math.PI / 5, 0.65, 1.2);
+  // One direct render pass: no reflection bake, bloom, shadow-map or second scene.
+  scene.add(new T.HemisphereLight(0xc5dcf1, 0x193023, 2.1));
+  const key = new T.DirectionalLight(0xffecd9, 3);
   key.position.set(-3, 7, 4);
-  key.castShadow = true;
-  key.shadow.mapSize.set(1024, 1024);
-  key.shadow.bias = -0.0004;
   scene.add(key);
-  const rim = new T.PointLight(0x25baff, 45, 25, 1.5);
+  const rim = new T.DirectionalLight(0x49b7df, 1.2);
   rim.position.set(3, 4, -3);
   scene.add(rim);
-  const warm = new T.PointLight(0xff510a, 25, 20, 1.5);
+  const warm = new T.DirectionalLight(0xff8f4c, 0.8);
   warm.position.set(-4, 2, -2);
   scene.add(warm);
   const turf = document.createElement("canvas");
@@ -166,28 +152,7 @@ export function startScene(host: HTMLDivElement, onComplete?: () => void) {
       }),
     ),
   );
-  const atmosphere = createAtmosphere(scene);
-  // Bloom is reserved for stronger devices; direct rendering remains the fallback.
-  let composer: EffectComposer | undefined;
-  let bloom: UnrealBloomPass | undefined;
-  let output: OutputPass | undefined;
-  let renderPass: RenderPass | undefined;
-  if (navigator.hardwareConcurrency >= 8) {
-    composer = new EffectComposer(renderer);
-    composer.setPixelRatio(Math.min(devicePixelRatio, 1.25));
-    renderPass = new RenderPass(scene, camera);
-    bloom = new UnrealBloomPass(
-      new T.Vector2(host.clientWidth, host.clientHeight),
-      0.24,
-      0.45,
-      1.25,
-    );
-    output = new OutputPass();
-    composer.addPass(renderPass);
-    composer.addPass(bloom);
-    composer.addPass(output);
-  }
-  const robotData = createRobot();
+  const robotData = createRobot({ assembledOnly: true });
   const { root: robot, wheels, kicker } = robotData;
   robot.rotation.y = -Math.PI / 2;
   robot.position.set(0, 0, 3.35);
@@ -206,47 +171,48 @@ export function startScene(host: HTMLDivElement, onComplete?: () => void) {
   const shotEnd = new T.Vector3(0.65, 0.62, -8.4);
   host.dataset.stage = "run-up";
   timeline
-    .to(robot.position, { z: 2.55, duration: 0.65, ease: "power2.out" }, 0)
+    .to(robot.position, { z: 2.55, duration: 0.4, ease: "power2.out" }, 0)
+    .to(robot.position, { z: 2.28, duration: 1.05, ease: "none" }, 0.4)
     .to(
       camera.position,
       {
         x: portrait ? 0.9 : 4.3,
         y: 2.8,
         z: portrait ? 8.5 : 6.2,
-        duration: 1.4,
+        duration: 1.7,
         ease: "sine.inOut",
       },
       0,
     )
     .to(
       cameraTarget,
-      { x: 0.1, y: 0.8, z: -3.4, duration: 1.4, ease: "sine.inOut" },
+      { x: 0.1, y: 0.8, z: -3.4, duration: 1.7, ease: "sine.inOut" },
       0,
     )
-    .to(kicker.position, { x: -0.7, duration: 0.15, ease: "power2.in" }, 0.52)
-    .to(kicker.position, { x: -1.16, duration: 0.11, ease: "power3.in" }, 0.67)
+    .to(kicker.position, { x: -0.7, duration: 0.1, ease: "power2.in" }, 0.29)
+    .to(kicker.position, { x: -1.16, duration: 0.09, ease: "power3.in" }, 0.39)
     .call(
       () => {
         host.dataset.stage = "shot";
       },
       [],
-      0.78,
+      0.48,
     )
-    .to(kicker.position, { x: -0.88, duration: 0.26, ease: "power2.out" }, 0.81)
+    .to(kicker.position, { x: -0.88, duration: 0.18, ease: "power2.out" }, 0.5)
     .to(
       shot,
       {
         progress: 1,
-        duration: goalTime - 0.78,
+        duration: goalTime - 0.48,
         ease: "none",
         onUpdate: () => {
           ball.position.lerpVectors(shotStart, shotEnd, shot.progress);
           ball.position.y += Math.sin(shot.progress * Math.PI) * 0.8;
         },
       },
-      0.78,
+      0.48,
     )
-    .to(ball.rotation, { x: -15, z: 1.3, duration: 0.87, ease: "none" }, 0.78)
+    .to(ball.rotation, { x: -15, z: 1.3, duration: 0.57, ease: "none" }, 0.48)
     .call(
       () => {
         host.dataset.stage = "goal";
@@ -269,55 +235,47 @@ export function startScene(host: HTMLDivElement, onComplete?: () => void) {
         host.dataset.stage = "celebration";
       },
       [],
-      1.85,
-    )
-    .call(
-      () => {
-        host.dataset.stage = "components";
-      },
-      [],
-      INTRO_TIMING.scatter,
+      goalTime + 0.05,
     );
   wheels.forEach((wheel) => {
     timeline.to(
       wheel.rotation,
-      { z: Math.PI * 2.5, duration: 0.65, ease: "power2.out" },
+      { z: Math.PI * 3.2, duration: 1.45, ease: "power1.out" },
       0,
     );
   });
-  createComponentCloud(
-    scene,
-    camera,
-    robotData,
-    timeline,
-    INTRO_TIMING.scatter,
-  );
+  addCurtainReveal(host, timeline);
   timeline.call(
     () => {
-      host.dataset.stage = "close-ups";
+      host.dataset.stage = "complete";
     },
     [],
-    INTRO_TIMING.closeups,
+    INTRO_TIMING.end,
   );
-  addCurtainReveal(host, timeline);
-  const portal = createLogoPortal(host, renderer, robotData, timeline);
-  portal.scene.environment = scene.environment;
-  portal.scene.environmentIntensity = 0.8;
-  portal.prepare();
-  // Prewarm shaders before the first visible motion frame.
-  renderer.compile(scene, camera);
-  let frame = 0;
+  // Without an environment map, retain diffuse metal detail rather than black reflections.
+  scene.traverse((object) => {
+    if (!(object instanceof T.Mesh)) return;
+    for (const material of Array.isArray(object.material)
+      ? object.material
+      : [object.material]) {
+      if (material instanceof T.MeshStandardMaterial)
+        material.metalness = Math.min(material.metalness, 0.25);
+    }
+  });
+  let lastCrowdUpdate = -1;
   const render = () => {
-    frame = requestAnimationFrame(render);
-    if (!document.hidden) {
-      if (portal.active) {
-        portal.render();
-        return;
-      }
+    // CSS/GSAP alone runs once fabric covers the pitch; no hidden GPU work.
+    if (
+      !disposed &&
+      !document.hidden &&
+      timeline.time() < INTRO_TIMING.curtainDown + 0.42
+    ) {
       camera.lookAt(cameraTarget);
-      atmosphere.update(timeline.time());
       celebration.update(timeline.time());
-      crowd.update(timeline.time());
+      if (timeline.time() - lastCrowdUpdate >= 1 / 30) {
+        crowd.update(timeline.time());
+        lastCrowdUpdate = timeline.time();
+      }
       const age = timeline.time() - goalTime;
       if (age >= 0 && age < 1.3) {
         const positions = netGeometry.attributes.position;
@@ -334,33 +292,49 @@ export function startScene(host: HTMLDivElement, onComplete?: () => void) {
         }
         positions.needsUpdate = true;
       }
-      if (composer) composer.render();
-      else renderer.render(scene, camera);
+      renderer.render(scene, camera);
     }
   };
-  render();
-  timeline.play(0);
+  // One animation clock, not competing GSAP and requestAnimationFrame loops.
+  timeline.eventCallback("onUpdate", render);
+  crowd.update(0);
+  host.dataset.sceneSetupMs = String(
+    Math.round(performance.now() - preparationStarted),
+  );
+  renderer
+    .compileAsync(scene, camera)
+    .then(() => {
+      if (disposed) return;
+      render();
+      host.dataset.sceneReadyMs = String(
+        Math.round(performance.now() - preparationStarted),
+      );
+      onReady?.();
+      timeline.play(0);
+    })
+    .catch(() => {
+      if (!disposed) onComplete?.();
+    });
+  const onVisibilityChange = () => {
+    if (document.hidden) timeline.pause();
+    else if (host.parentElement?.classList.contains("intro-ready"))
+      timeline.resume();
+  };
+  document.addEventListener("visibilitychange", onVisibilityChange);
   const resize = () => {
     camera.aspect = host.clientWidth / host.clientHeight;
     camera.zoom = Math.min(1, Math.max(0.5, camera.aspect / 1.35));
     camera.updateProjectionMatrix();
     renderer.setSize(host.clientWidth, host.clientHeight);
-    composer?.setSize(host.clientWidth, host.clientHeight);
-    if (portal.active) portal.resize();
   };
   window.addEventListener("resize", resize);
   return () => {
-    cancelAnimationFrame(frame);
+    disposed = true;
     timeline.kill();
-    atmosphere.dispose();
     celebration.dispose();
     crowd.dispose();
-    bloom?.dispose();
-    output?.dispose();
-    renderPass?.dispose();
-    composer?.dispose();
+    document.removeEventListener("visibilitychange", onVisibilityChange);
     window.removeEventListener("resize", resize);
-    // Foreground clones share buffers and textures with the assembled robot.
     const geometries = new Set<T.BufferGeometry>();
     const materials = new Set<T.Material>();
     const maps = new Set<T.Texture>();
@@ -381,8 +355,6 @@ export function startScene(host: HTMLDivElement, onComplete?: () => void) {
     materials.forEach((material) => material.dispose());
     maps.forEach((map) => map.dispose());
     texture.dispose();
-    env.dispose();
-    key.shadow.dispose();
     renderer.dispose();
     renderer.forceContextLoss();
     renderer.domElement.remove();

@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { INTRO_PLAYBACK_TIMEOUT_MS } from "@/lib/intro-config";
+import {
+  INTRO_PLAYBACK_TIMEOUT_MS,
+  INTRO_PREPARATION_TIMEOUT_MS,
+  INTRO_LOGO_BALL,
+  INTRO_LOGO_PIECES,
+} from "@/lib/intro-config";
 
 /** Server-rendered cover prevents the homepage appearing before hydration. */
 export function Intro() {
@@ -35,22 +40,28 @@ export function Intro() {
       element.inert = true;
     });
     // Covers module loading too: WebGL failure must never block the website.
-    let timeout = window.setTimeout(finish, 6500);
+    let timeout = window.setTimeout(finish, INTRO_PREPARATION_TIMEOUT_MS);
     const onMotionChange = () => {
       if (motion.matches) finish();
     };
     motion.addEventListener("change", onMotionChange);
 
-    import("@/lib/intro-scene")
-      .then(({ startScene }) => {
+    const logo = host.current?.parentElement?.querySelector<HTMLImageElement>(
+      ".curtain-logo-source",
+    );
+    Promise.all([
+      import("@/lib/intro-scene"),
+      logo?.decode().catch(() => undefined),
+    ])
+      .then(([{ startScene }]) => {
         if (disposed || !host.current) return;
         try {
-          stop = startScene(host.current, finish);
-          // Shader preparation may be slow on a first visit. Let the full short
-          // goal and celebration finish before releasing the homepage.
-          clearTimeout(timeout);
-          timeout = window.setTimeout(finish, INTRO_PLAYBACK_TIMEOUT_MS);
-          host.current.parentElement?.classList.add("intro-ready");
+          stop = startScene(host.current, finish, () => {
+            if (disposed) return;
+            clearTimeout(timeout);
+            timeout = window.setTimeout(finish, INTRO_PLAYBACK_TIMEOUT_MS);
+            host.current?.parentElement?.classList.add("intro-ready");
+          });
         } catch {
           finish();
         }
@@ -75,36 +86,45 @@ export function Intro() {
       <link
         rel="preload"
         as="image"
-        href="/images/intro-poster.webp"
+        href="/images/robo-goal-india-logo-dark.webp"
         fetchPriority="high"
       />
-      {["esp32", "arduino-uno", "battery-pack", "motor-driver"].map((name) => (
-        <link
-          key={name}
-          rel="preload"
-          as="image"
-          href={`/images/components/${name}.webp`}
-        />
-      ))}
-      <link rel="preload" as="image" href="/images/robo-goal-india-logo.png" />
-      <div className="intro-standby" />
+      <div className="intro-standby">
+        <div className="intro-lead-in-ball" />
+      </div>
       <div className="intro-canvas" ref={host} />
-      <div className="curtain-portal-canvas" />
       <div className="intro-curtain">
         <div className="curtain-panel curtain-panel-left" />
         <div className="curtain-panel curtain-panel-right" />
         <div className="curtain-brand">
           <div className="curtain-logo-stage">
-            {/* Exact supplied artwork; never regenerated or redrawn. */}
+            {/* Reuse the existing wordmark; animate clipped artwork, not substitute text. */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              className="curtain-logo"
-              src="/images/robo-goal-india-logo.png"
+              className="curtain-logo-source"
+              src="/images/robo-goal-india-logo-dark.webp"
               alt="Robo Goal India"
-              width={716}
-              height={111}
+              width={1440}
+              height={271}
             />
-            <div className="curtain-portal-mouth" />
+            <div
+              className="curtain-football"
+              style={{
+                clipPath: `ellipse(${INTRO_LOGO_BALL.radiusX * 100}% ${INTRO_LOGO_BALL.radiusY * 100}% at ${INTRO_LOGO_BALL.x * 100}% ${INTRO_LOGO_BALL.y * 100}%)`,
+                transformOrigin: `${INTRO_LOGO_BALL.x * 100}% ${INTRO_LOGO_BALL.y * 100}%`,
+              }}
+            />
+            {INTRO_LOGO_PIECES.map((piece) => (
+              <div
+                className="curtain-logo-piece"
+                data-logo-piece={piece.id}
+                key={piece.id}
+                style={{
+                  clipPath: `inset(0 ${100 - piece.right}% 0 ${piece.left}%)`,
+                  transformOrigin: `${(piece.left + piece.right) / 2}% 50%`,
+                }}
+              />
+            ))}
           </div>
         </div>
       </div>

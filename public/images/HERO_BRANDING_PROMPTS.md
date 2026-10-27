@@ -8,7 +8,7 @@ Created 26 October 2026 using the built-in imagegen tool, not the CLI/API fallba
 | `robo-goal-india-logo-dark.webp` | `exec-1f6a4124-06d3-47bb-b4ce-ba1fee743263.png` | Alpha-trimmed, 1440×271, lossless WebP |
 | `robotic-sir-logo-dark.webp` | `exec-65853879-2807-4b73-a8d5-0e8cebeb758d.png` | Alpha-trimmed, 1200×205, lossless WebP |
 
-These are a CGI illustration and AI-assisted logo adaptations, not documentary photography or new official master logos. The hero has a bounded CSS camera movement, not independently moving robot meshes. The exact original Robo Goal India logo is still used on the white/orange intro curtain.
+These are a CGI illustration and AI-assisted logo adaptations, not documentary photography or new official master logos. The hero has a bounded CSS camera movement, not independently moving robot meshes. The exact original Robo Goal India logo is retained as a master reference. Since 27 October, the red-and-gold intro curtain assembles clipped pieces of the existing transparent dark-theme adaptation rather than showing the original white-background asset; no additional image generation was used for that animation update.
 
 ## Hero final prompt
 

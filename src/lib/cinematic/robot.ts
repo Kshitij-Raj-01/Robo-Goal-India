@@ -2,7 +2,7 @@ import * as T from "three";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 
-export function createRobot() {
+export function createRobot({ assembledOnly = false } = {}) {
   const root = new T.Group();
   const parts: { mesh: T.Group; target: T.Vector3; rotation: T.Euler }[] = [];
   const wheels: T.Group[] = [];
@@ -106,7 +106,17 @@ export function createRobot() {
   ) =>
     mesh(
       p,
-      new RoundedBoxGeometry(w, h, d, 2, Math.min(w, h, d) * 0.16),
+      // Tiny tread blocks, PCB chips and sheet-metal edges don't need hundreds
+      // of bevel triangles during a short full-bot shot.
+      assembledOnly && Math.min(w, h, d) < 0.08
+        ? new T.BoxGeometry(w, h, d)
+        : new RoundedBoxGeometry(
+            w,
+            h,
+            d,
+            assembledOnly ? 1 : 2,
+            Math.min(w, h, d) * 0.16,
+          ),
       m,
       x,
       y,
@@ -358,12 +368,22 @@ export function createRobot() {
   box(kicker, 0.1, 0.13, 0.58, rubber, -0.5, -0.04, 0);
   // Merge the fine hardware per material inside each detachable assembly.
   // The complete bot keeps its detail without hundreds of draw calls per frame.
+  let mergeTargets = parts.map((assembly) => assembly.mesh);
+  if (assembledOnly) {
+    const body = new T.Group();
+    body.name = "Assembled robot body";
+    root.add(body);
+    for (const assembly of parts)
+      if (!wheels.includes(assembly.mesh) && assembly.mesh !== kicker)
+        body.attach(assembly.mesh);
+    mergeTargets = [body, ...wheels, kicker];
+  }
   root.updateMatrixWorld(true);
-  for (const assembly of parts) {
-    const inverse = assembly.mesh.matrixWorld.clone().invert();
+  for (const assembly of mergeTargets) {
+    const inverse = assembly.matrixWorld.clone().invert();
     const batches = new Map<T.Material, T.BufferGeometry[]>();
     const originals = new Set<T.BufferGeometry>();
-    assembly.mesh.traverse((object) => {
+    assembly.traverse((object) => {
       if (!(object instanceof T.Mesh) || Array.isArray(object.material)) return;
       const geometry = object.geometry
         .clone()
@@ -377,11 +397,11 @@ export function createRobot() {
       batches.set(object.material, batch);
       originals.add(object.geometry);
     });
-    assembly.mesh.clear();
+    assembly.clear();
     for (const [material, geometries] of batches) {
       const merged = mergeGeometries(geometries);
       geometries.forEach((geometry) => geometry.dispose());
-      if (merged) mesh(assembly.mesh, merged, material);
+      if (merged) mesh(assembly, merged, material);
     }
     originals.forEach((geometry) => geometry.dispose());
   }

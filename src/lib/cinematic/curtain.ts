@@ -1,7 +1,7 @@
 import { gsap } from "gsap";
-import { INTRO_TIMING } from "../intro-config";
+import { INTRO_LOGO_PIECES, INTRO_TIMING } from "../intro-config";
 
-/** White/orange fabric, supplied logo, football-O portal, then homepage reveal. */
+/** Football lands in GOAL; logo assembles and disperses before the page reveal. */
 export function addCurtainReveal(
   host: HTMLDivElement,
   timeline: gsap.core.Timeline,
@@ -9,12 +9,63 @@ export function addCurtainReveal(
   const intro = host.parentElement!;
   const curtain = intro.querySelector<HTMLElement>(".intro-curtain")!;
   const brand = intro.querySelector<HTMLElement>(".curtain-brand")!;
-  const mouth = intro.querySelector<HTMLElement>(".curtain-portal-mouth")!;
+  const football = intro.querySelector<HTMLElement>(".curtain-football")!;
   const left = curtain.querySelector<HTMLElement>(".curtain-panel-left")!;
   const right = curtain.querySelector<HTMLElement>(".curtain-panel-right")!;
-  gsap.set(curtain, { yPercent: -105, visibility: "visible" });
-  gsap.set(brand, { opacity: 0, y: 25, scale: 0.92 });
-  gsap.set(mouth, { opacity: 0, scale: 0.7 });
+  const pieces = [
+    ...intro.querySelectorAll<HTMLElement>(".curtain-logo-piece"),
+  ];
+  gsap.set(curtain, { yPercent: -104, visibility: "visible" });
+  gsap.set(brand, { opacity: 1 });
+  gsap.set(football, {
+    opacity: 0,
+    x: () => host.clientWidth * 0.55,
+    y: () => -host.clientHeight * 0.28,
+    rotation: -220,
+    scale: 2.5,
+    force3D: true,
+  });
+  pieces.forEach((element, index) => {
+    const piece = INTRO_LOGO_PIECES[index];
+    gsap.set(element, {
+      opacity: 0,
+      x: () => host.clientWidth * piece.x,
+      y: () => host.clientHeight * piece.y,
+      rotation: piece.rotate,
+      scale: piece.id === "goal-o" ? 1 : 0.8,
+      force3D: true,
+    });
+    timeline.to(
+      element,
+      {
+        opacity: 1,
+        x: 0,
+        y: 0,
+        rotation: 0,
+        scale: 1,
+        duration: 0.52,
+        ease: "power3.out",
+      },
+      INTRO_TIMING.logo + index * 0.025,
+    );
+    const direction = index < 5 ? -1 : 1;
+    timeline.to(
+      element,
+      {
+        opacity: 0,
+        x: () => direction * host.clientWidth * (0.23 + index * 0.025),
+        y: () =>
+          (index % 2 ? 1 : -1) *
+          host.clientHeight *
+          (0.22 + (index % 3) * 0.06),
+        rotation: direction * (18 + index * 4),
+        scale: 0.75,
+        duration: 0.48,
+        ease: "power2.in",
+      },
+      INTRO_TIMING.scatter + index * 0.012,
+    );
+  });
   timeline
     .call(
       () => {
@@ -25,37 +76,58 @@ export function addCurtainReveal(
     )
     .to(
       curtain,
-      { yPercent: 0, duration: 0.65, ease: "power3.inOut" },
+      { yPercent: 0, duration: 0.42, ease: "power3.inOut" },
       INTRO_TIMING.curtainDown,
     )
-    .set(host, { visibility: "hidden" }, INTRO_TIMING.logo - 0.05)
+    .set(host, { visibility: "hidden" }, INTRO_TIMING.curtainDown + 0.42)
     .call(
       () => {
-        host.dataset.stage = "curtain-logo";
+        curtain.classList.add("curtain-lit");
+      },
+      [],
+      INTRO_TIMING.curtainDown + 0.42,
+    )
+    .call(
+      () => {
+        host.dataset.stage = "football-o";
+      },
+      [],
+      INTRO_TIMING.football,
+    )
+    .to(
+      football,
+      {
+        opacity: 1,
+        x: 0,
+        y: 0,
+        rotation: 0,
+        scale: 1,
+        duration: 0.55,
+        ease: "power3.out",
+      },
+      INTRO_TIMING.football,
+    )
+    .call(
+      () => {
+        host.dataset.stage = "logo-assembling";
       },
       [],
       INTRO_TIMING.logo,
     )
-    .to(
-      brand,
-      {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        duration: 0.65,
-        ease: "back.out(1.25)",
+    .set(football, { opacity: 0 }, INTRO_TIMING.assembled)
+    .call(
+      () => {
+        host.dataset.stage = "logo-assembled";
       },
-      INTRO_TIMING.logo,
+      [],
+      INTRO_TIMING.assembled,
     )
-    .to(
-      mouth,
-      { opacity: 1, scale: 1, duration: 0.35, ease: "power2.out" },
-      INTRO_TIMING.portal,
-    )
-    .to(
-      brand,
-      { opacity: 0, duration: 0.35, ease: "power2.in" },
-      INTRO_TIMING.logoOut,
+    .call(
+      () => {
+        host.dataset.stage = "logo-scatter";
+      },
+      [],
+      INTRO_TIMING.scatter,
     )
     .call(
       () => {
@@ -65,16 +137,16 @@ export function addCurtainReveal(
         document.documentElement.dataset.intro = "revealing";
       },
       [],
-      INTRO_TIMING.curtainOpen - 0.05,
+      INTRO_TIMING.curtainOpen - 0.02,
     )
     .to(
       left,
-      { xPercent: -104, duration: 0.8, ease: "power3.inOut" },
+      { xPercent: -104, duration: 0.62, ease: "power3.inOut" },
       INTRO_TIMING.curtainOpen,
     )
     .to(
       right,
-      { xPercent: 104, duration: 0.8, ease: "power3.inOut" },
+      { xPercent: 104, duration: 0.62, ease: "power3.inOut" },
       INTRO_TIMING.curtainOpen,
     );
 }
