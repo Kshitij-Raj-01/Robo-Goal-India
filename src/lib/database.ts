@@ -95,6 +95,12 @@ async function connect(): Promise<DB> {
   await db.query(
     "CREATE TABLE IF NOT EXISTS rate_limits (key TEXT PRIMARY KEY, count INTEGER NOT NULL)",
   );
+  await db.query(
+    "CREATE TABLE IF NOT EXISTS request_limits (key TEXT PRIMARY KEY, count INTEGER NOT NULL, expires BIGINT NOT NULL)",
+  );
+  await db.query(
+    "CREATE INDEX IF NOT EXISTS request_limits_expiry ON request_limits (expires)",
+  );
   return db;
 }
 export async function saveRequest(
@@ -151,4 +157,20 @@ export async function allowEmail(key: string) {
     [key],
   );
   return Number(rows[0]?.count) <= 5;
+}
+export async function allowRate(
+  identity: string,
+  limit: number,
+  seconds: number,
+  now = Date.now(),
+) {
+  const db = await getDb();
+  const window = Math.floor(now / (seconds * 1000));
+  const key = `${identity}:${window}`;
+  await db.query("DELETE FROM request_limits WHERE expires < $1", [now]);
+  const rows = await db.query(
+    "INSERT INTO request_limits (key,count,expires) VALUES ($1,1,$2) ON CONFLICT (key) DO UPDATE SET count=request_limits.count+1 RETURNING count",
+    [key, (window + 1) * seconds * 1000],
+  );
+  return Number(rows[0]?.count) <= limit;
 }

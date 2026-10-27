@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { authorized, sameOrigin } from "@/lib/security";
+import { authorized, sameOrigin, boundedJson } from "@/lib/security";
 import { getDb, type RequestRecord } from "@/lib/database";
 import { csvCell, requestStatuses } from "@/lib/enquiry-schema";
 import { deliverNotifications } from "@/lib/mail";
@@ -101,7 +101,7 @@ export async function PATCH(request: Request) {
       status: z.enum(requestStatuses),
       notes: z.string().max(10000),
     });
-    const body = schema.safeParse(await request.json());
+    const body = schema.safeParse(await boundedJson(request));
     if (!body.success)
       return Response.json({ error: "Invalid update." }, { status: 422 });
     const db = await getDb();
@@ -139,7 +139,11 @@ export async function PATCH(request: Request) {
       result ? { ok: true } : { error: "Request not found." },
       { status: result ? 200 : 404 },
     );
-  } catch {
+  } catch (error) {
+    if (error instanceof Error && error.message === "BODY_TOO_LARGE")
+      return Response.json({ error: "Payload too large." }, { status: 413 });
+    if (error instanceof Error && error.message === "INVALID_JSON")
+      return Response.json({ error: "Invalid JSON." }, { status: 400 });
     return Response.json(
       { error: "Update could not be saved." },
       { status: 503 },

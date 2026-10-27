@@ -3,6 +3,8 @@ import { Navbar, Footer, Analytics } from "@/components/shell";
 import { JsonLd } from "@/components/ui";
 import { site } from "@/lib/content";
 import { INTRO_BOOT_SCRIPT, INTRO_CRITICAL_CSS } from "@/lib/intro-config";
+import { getContent } from "@/lib/cms";
+import { ContentProvider } from "@/components/content-provider";
 import "@fontsource/barlow/latin-400.css";
 import "@fontsource/barlow/latin-500.css";
 import "@fontsource/barlow/latin-600.css";
@@ -38,11 +40,13 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 export const viewport: Viewport = { themeColor: "#070d18" };
-export default function RootLayout({
+export const dynamic = "force-dynamic";
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const content = await getContent();
   return (
     <html lang="en" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
@@ -53,10 +57,12 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <Navbar />
-        <main id="main">{children}</main>
-        <Footer />
-        <Analytics />
+        <ContentProvider value={content}>
+          <Navbar />
+          <main id="main">{children}</main>
+          <Footer />
+          <Analytics />
+        </ContentProvider>
         <JsonLd
           data={{
             "@context": "https://schema.org",

@@ -12,8 +12,9 @@ import {
   sponsors,
 } from "@/lib/content";
 import { PageHero, JsonLd } from "@/components/ui";
+import { getContent } from "@/lib/cms";
 type Props = { params: Promise<{ section: string; slug: string }> };
-export const dynamicParams = false;
+export const dynamicParams = true;
 export function generateStaticParams({
   params,
 }: {
@@ -29,7 +30,8 @@ export function generateStaticParams({
           : [];
   return records.map((item) => ({ slug: item.slug }));
 }
-function record(section: string, slug: string) {
+async function record(section: string, slug: string) {
+  const { events } = await getContent();
   return section === "events"
     ? events.find((e) => e.slug === slug)
     : section === "teams"
@@ -40,7 +42,7 @@ function record(section: string, slug: string) {
 }
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { section, slug } = await params;
-  const r = record(section, slug);
+  const r = await record(section, slug);
   return {
     title: r ? ("title" in r ? r.title : r.name) : "Not found",
     alternates: { canonical: `/${section}/${slug}` },
@@ -48,7 +50,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 export default async function Detail({ params }: Props) {
   const { section, slug } = await params;
-  const r = record(section, slug);
+  const { events, media, site } = await getContent();
+  const r = await record(section, slug);
   if (!r) notFound();
   if (section === "events") {
     const event = events.find((e) => e.slug === slug)!;
@@ -64,6 +67,7 @@ export default async function Detail({ params }: Props) {
             <Image
               className="detail-image"
               src={event.cover}
+              unoptimized={event.cover.startsWith("/media/")}
               alt={event.title}
               width={1400}
               height={800}
@@ -104,6 +108,7 @@ export default async function Detail({ params }: Props) {
                 <Image
                   key={m.id}
                   src={m.src}
+                  unoptimized={m.src.startsWith("/media/")}
                   alt={m.alt}
                   width={m.width}
                   height={m.height}

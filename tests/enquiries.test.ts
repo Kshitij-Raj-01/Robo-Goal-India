@@ -8,8 +8,13 @@ import {
   validateAttachment,
   csvCell,
 } from "../src/lib/enquiry-schema";
-import { getDb, saveRequest, allowEmail } from "../src/lib/database";
-import { authorized, sameOrigin, boundedFormData } from "../src/lib/security";
+import { getDb, saveRequest, allowEmail, allowRate } from "../src/lib/database";
+import {
+  authorized,
+  sameOrigin,
+  boundedFormData,
+  boundedJson,
+} from "../src/lib/security";
 const valid = {
   type: "General Enquiry",
   contact: "Test Applicant",
@@ -146,6 +151,23 @@ test("request body size limit does not trust the Content-Length header", async (
     headers: { "content-type": "multipart/form-data; boundary=x" },
   });
   await assert.rejects(() => boundedFormData(request), /BODY_TOO_LARGE/);
+  await assert.rejects(
+    () =>
+      boundedJson(
+        new Request("http://localhost", {
+          method: "PATCH",
+          body: "x".repeat(30001),
+        }),
+      ),
+    /BODY_TOO_LARGE/,
+  );
+  await assert.rejects(
+    () =>
+      boundedJson(
+        new Request("http://localhost", { method: "PATCH", body: "not-json" }),
+      ),
+    /INVALID_JSON/,
+  );
 });
 test("durable storage prevents duplicate submissions and queues exactly two notifications", async () => {
   process.env.RGI_DATA_DIR = mkdtempSync(join(tmpdir(), "rgi-test-"));
@@ -183,4 +205,17 @@ test("durable storage prevents duplicate submissions and queues exactly two noti
   assert.equal(new Set(concurrent.map((r) => r.reference)).size, 1);
   for (let i = 0; i < 5; i++) assert.equal(await allowEmail("rate-test"), true);
   assert.equal(await allowEmail("rate-test"), false);
+  const now = Date.now();
+  const counts = await Promise.all(
+    Array.from({ length: 8 }, () => allowRate("shared-ip-test", 3, 600, now)),
+  );
+  assert.equal(counts.filter(Boolean).length, 3);
+  assert.equal(await allowRate("shared-ip-test", 3, 600, now + 600000), true);
+  await allowRate("expired-test", 1, 1, now - 10000);
+  await allowRate("cleanup-test", 1, 1, now);
+  assert.equal(
+    (await db.query("SELECT * FROM request_limits WHERE expires < $1", [now]))
+      .length,
+    0,
+  );
 });

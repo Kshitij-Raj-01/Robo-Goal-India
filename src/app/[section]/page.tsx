@@ -99,7 +99,7 @@ const pages: Record<
       "Explore the machines behind the matches: their controllers, drive systems, design choices and competition performance.",
   },
 };
-export const dynamicParams = false;
+export const dynamicParams = true;
 export function generateStaticParams() {
   return Object.keys(pages).map((section) => ({ section }));
 }
@@ -138,9 +138,9 @@ export default async function SectionPage({
                 <em>PLAYING FIELD.</em>
               </h2>
               <p>
-                Robo Goal India brings schools, universities and technology
-                communities together through robotic soccer and Robo Race.
-                Students design and build their machines, then put their
+                Robo Goal India (RGI) brings schools, universities and
+                technology communities together through robotic soccer and Robo
+                Race. Students design and build their machines, then put their
                 engineering decisions to the test in the arena.
               </p>
               <p>

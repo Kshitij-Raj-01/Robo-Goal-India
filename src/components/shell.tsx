@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { ArrowUpRight, Menu, X, ArrowUp } from "lucide-react";
 import { navigation, site } from "@/lib/content";
 import { Brand, OrganizerLogo } from "./ui";
+import { useContent } from "./content-provider";
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -127,6 +128,7 @@ export function Navbar() {
   );
 }
 export function Footer() {
+  const { site } = useContent();
   return (
     <footer>
       <div className="container footer-top">
@@ -169,6 +171,7 @@ export function Footer() {
         </div>
         <div>
           <h4>STAY CONNECTED</h4>
+          <Link href="/blog">RGI Blog ↗</Link>
           <p>
             India’s next sporting chapter
             <br />
@@ -204,7 +207,6 @@ export function Footer() {
             ["Competition Rules", "rules"],
             ["Privacy Policy", "privacy"],
             ["Terms", "terms"],
-            ["Refund Policy", "refund"],
           ].map(([l, h]) => (
             <Link key={h} href={`/documents/${h}`}>
               {l}

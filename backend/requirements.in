@@ -1,0 +1,8 @@
+Django>=5.2,<5.3
+Pillow>=13.0,<14
+pillow-heif>=1,<2
+psycopg[binary]>=3.2,<4
+gunicorn>=23,<27
+Markdown>=3.7,<4
+bleach>=6.2,<7
+django-axes>=8,<9

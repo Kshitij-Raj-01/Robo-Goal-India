@@ -1,5 +1,19 @@
 # Robo Goal India
 
+## Django CMS and container deployment update
+
+The publishing backend is now Django (`backend/`), with events, WebP photo upload,
+fixtures, contact settings, homepage counts and Markdown/SEO blogs. `/admin` now
+redirects to Django at `/cms-admin/`; the existing bearer-protected enquiry dashboard
+is retained separately at `/enquiries-admin`. The public frontend reads published
+CMS content at request time. Intro playback is limited to first homepage entry per
+browser tab, so history navigation does not restart it. Footer links include the
+RGI blog; the refund policy has been removed while no payments are accepted.
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for Docker Compose setup, required secrets,
+TLS/trusted-proxy rules, backups, policy approval and launch checks. Older setup
+and motion notes below describe earlier revisions where they conflict.
+
 Original, responsive robotic-sports website for **robogoalindia.com**, organized by **Robotic Sir AI India Pvt. Ltd.** Built with Next.js 16.4.3 App Router, React 19, TypeScript, GSAP, Three.js and Zod.
 
 ## Run locally

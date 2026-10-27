@@ -54,7 +54,9 @@ test("assembled-shot robot keeps its bounds and moving parts with a smaller geom
     assert.ok(
       countVertices(assembled.root) < countVertices(detailed.root) * 0.5,
     );
-    assert.ok(countVertices(detachable.root) < countVertices(detailed.root) * 0.5);
+    assert.ok(
+      countVertices(detachable.root) < countVertices(detailed.root) * 0.5,
+    );
   } finally {
     if (previousDocument)
       Object.defineProperty(globalThis, "document", previousDocument);

@@ -283,19 +283,61 @@ export const documents: {
   {
     slug: "privacy",
     title: "Privacy Policy",
-    body: "The organizer’s approved privacy policy is awaiting publication. Production enquiries remain disabled until the policy and terms are approved. This development preview stores test enquiries for demonstrating the workflow.",
-    published: false,
+    body: `Privacy Policy · version 27 October 2026
+
+Who we are
+Robo Goal India (RGI) is organized by Robotic Sir AI India Pvt. Ltd. For privacy requests, corrections, withdrawal of consent or complaints, contact ai@roboticsir.com or use the organizer details on our Contact page. Describe your request without sending passwords or identity documents unless a secure verification process is agreed.
+
+Information collected
+When you send an enquiry, we collect the name, organization, organization type, email, telephone number, city/state, message, consent choices and any optional hosting/partnership details or attachment you provide. Technical request information may include network address, time, browser information, security verification outcome and request reference. Network identifiers used by application rate limits are hashed. Necessary admin cookies protect staff sign-in; a session-storage flag prevents the intro replaying within your browser tab.
+
+Why information is used
+We use enquiry information to respond, assess hosting or partnership proposals, coordinate follow-up, maintain submission records and protect the service against abuse. Optional publicity or marketing requires a separate decision; an enquiry is not permission for unrelated advertising. Do not submit sensitive personal records, payment details or unnecessary information about other people.
+
+Service providers and disclosure
+Authorized staff and contracted hosting, database, security verification and email providers may process information only for operating this service and handling requests. We may disclose information when legally required or necessary to protect rights and service security. We do not sell enquiry information. Hosting locations and provider arrangements must be confirmed by the organizer before production enquiries open.
+
+Photos and children
+The gallery publishes organizer-approved images. Administrators must confirm image rights and required participant/parent or guardian permissions before publication. Enquiries should be sent by an adult institutional representative or a parent/guardian, not by children supplying their personal details. Contact us to request review or removal of an identifiable image; we may need proportionate verification. Participation and image permissions are handled separately from a general enquiry.
+
+Retention and safeguards
+Records are restricted to authorized personnel and retained only while needed for the request, legal obligations, dispute handling or security. Closed enquiries should be reviewed for deletion or anonymization at least annually; backups follow the operator’s retention schedule. Access controls, TLS in production and operational backups reduce risk but cannot guarantee absolute security. The organizer is responsible for enforcing retention, provider agreements and incident-response procedures.
+
+Your choices
+You may request information about your data, correction, deletion, withdrawal of consent or grievance review through the contact above. Withdrawal does not undo processing already carried out, and some records may need to be kept for legal reasons. We will assess requests, verify identity proportionately where necessary and respond under applicable law. You may pursue available legal complaint mechanisms where applicable.
+
+Changes
+Material changes will be reflected in the version date and notice on this page. This policy must be reviewed and approved by the organizer against actual operations before production forms are enabled.`,
+    published: true,
   },
   {
     slug: "terms",
     title: "Terms & Conditions",
-    body: "Official participation and website terms are awaiting organizer approval. No paid registration or binding competition entry is available on this preview.",
-    published: false,
-  },
-  {
-    slug: "refund",
-    title: "Refund Policy",
-    body: "The refund and cancellation policy will be published before any paid registration opens. This website currently accepts no payments.",
-    published: false,
+    body: `Terms & Conditions · version 27 October 2026
+
+About this website
+These terms govern use of the Robo Goal India (RGI) website operated by Robotic Sir AI India Pvt. Ltd. Contact the organizer through the Contact page or ai@roboticsir.com. Use the site lawfully and respect other users, participants and institutions.
+
+Information and announcements
+Competition pathways, proposed stages and future league plans are indicative unless confirmed in an official event announcement. Dates, venues, eligibility and formats may change. Published event-specific rules and a written organizer confirmation govern participation. Website information and blog articles are general information, not a guarantee of qualification, safety, results or professional advice.
+
+Enquiries and participation
+Submitting a contact, hosting, sponsorship or partnership request is an expression of interest, not an accepted registration, contract, reservation, sponsorship agreement or promise of selection. An authorized adult should submit accurate information on behalf of an institution. Do not impersonate another person or submit personal information without authority. Separate written terms, safety rules and any required parent/guardian permissions apply before participation.
+
+Payments
+This website does not currently accept payments. Do not send payment-card details or transfer funds in response to an unverified message. Paid registration, cancellation and refund terms will be published before any payment facility launches.
+
+Acceptable use and submissions
+Do not attack the service, bypass rate limits, upload malicious files, scrape private records, spam forms or infringe others’ rights. You retain rights in your submitted material and permit the organizer to use it only to assess and respond to your request. Enquiry attachments are not automatically public. Publication of photos and stories requires appropriate rights and permissions.
+
+Intellectual property and links
+RGI and Robotic Sir branding, original website content and licensed materials may not be misrepresented as your own or used to imply endorsement. Third-party materials remain subject to their respective rights. External links are provided for convenience; external services have their own terms and privacy practices.
+
+Availability and responsibility
+We take reasonable care but do not promise uninterrupted access or that all content will always be complete or current. To the extent permitted by applicable law, responsibility is limited to losses reasonably attributable to the organizer’s breach; nothing excludes liability or consumer rights that cannot lawfully be excluded. Competition risks and responsibilities must be set out in event-specific participation terms, not inferred from this website.
+
+Privacy, changes and disputes
+The Privacy Policy explains enquiry data use. Updated terms will be shown with a revised version date; material changes do not silently alter an existing signed agreement. Indian law applies, subject to mandatory rights and competent courts or authorities. Contact the organizer first to seek a practical resolution. The organizer must review and approve these terms before enabling production submissions.`,
+    published: true,
   },
 ];

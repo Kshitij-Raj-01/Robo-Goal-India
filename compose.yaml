@@ -1,0 +1,127 @@
+name: rgi
+x-backend-env: &backend-env
+  DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?Generate DJANGO_SECRET_KEY in .env.docker}
+  DJANGO_DEBUG: "false"
+  DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:?Set allowed hosts}
+  DJANGO_CSRF_TRUSTED_ORIGINS: ${DJANGO_CSRF_TRUSTED_ORIGINS:?Set trusted HTTPS origins}
+  DATABASE_URL: postgresql://${POSTGRES_USER:-rgi}:${POSTGRES_PASSWORD:?Set database password}@db:5432/${POSTGRES_DB:-rgi}
+  DB_SSLMODE: disable
+services:
+  db:
+    image: postgres:17-bookworm
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-rgi}
+      POSTGRES_USER: ${POSTGRES_USER:-rgi}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set database password}
+    volumes: ["postgres_data:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+    networks: [private]
+    logging: &logging
+      driver: json-file
+      options: {max-size: "10m", max-file: "3"}
+  migrate:
+    build: ./backend
+    environment: *backend-env
+    command: ["python", "manage.py", "migrate", "--noinput"]
+    depends_on:
+      db: {condition: service_healthy}
+    networks: [private]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    logging: *logging
+  backend:
+    build: ./backend
+    environment: *backend-env
+    volumes: ["media:/app/media", "django_static:/app/staticfiles"]
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+      static:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health/', timeout=3)"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    read_only: true
+    tmpfs: ["/tmp:size=64m,mode=1777"]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    networks: [private]
+    logging: *logging
+  static:
+    build: ./backend
+    environment: *backend-env
+    command: ["python", "manage.py", "collectstatic", "--noinput"]
+    volumes: ["django_static:/app/staticfiles"]
+    depends_on:
+      db: {condition: service_healthy}
+    networks: [private]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    logging: *logging
+  frontend:
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:?Set public HTTPS site URL}
+        NEXT_PUBLIC_TURNSTILE_SITE_KEY: ${NEXT_PUBLIC_TURNSTILE_SITE_KEY:-}
+    environment:
+      CMS_INTERNAL_URL: http://backend:8000
+      CMS_REQUIRED: "true"
+      DATABASE_URL: postgresql://${POSTGRES_USER:-rgi}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-rgi}
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL}
+      TRUST_PROXY: "true"
+      RATE_LIMIT_SECRET: ${RATE_LIMIT_SECRET:?Generate a separate rate-limit secret}
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-}
+      TURNSTILE_SECRET_KEY: ${TURNSTILE_SECRET_KEY:-}
+      POLICIES_APPROVED: ${POLICIES_APPROVED:-false}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      MAIL_FROM: ${MAIL_FROM:-}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-}
+    volumes: ["next_cache:/app/.next/cache"]
+    depends_on:
+      backend: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 20s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+    read_only: true
+    tmpfs: ["/tmp:size=64m,mode=1777"]
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    networks: [private]
+    logging: *logging
+  proxy:
+    image: nginx:stable-alpine
+    ports: ["127.0.0.1:${HTTP_PORT:-8080}:8080"]
+    environment:
+      TRUSTED_EDGE_CIDR: ${TRUSTED_EDGE_CIDR:?Set the exact trusted TLS proxy source CIDR}
+      NGINX_ENVSUBST_OUTPUT_DIR: /etc/nginx
+    volumes:
+      - ./deploy/nginx.conf:/etc/nginx/templates/nginx.conf.template:ro
+      - media:/srv/media:ro
+      - django_static:/srv/django-static:ro
+    depends_on:
+      frontend: {condition: service_healthy}
+      backend: {condition: service_healthy}
+    restart: unless-stopped
+    networks: [private]
+    logging: *logging
+volumes:
+  postgres_data:
+  media:
+  django_static:
+  next_cache:
+networks:
+  private:

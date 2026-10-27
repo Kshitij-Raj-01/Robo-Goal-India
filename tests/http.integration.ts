@@ -5,12 +5,23 @@ import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { randomBytes, randomUUID } from "node:crypto";
+import { createServer } from "node:net";
 
 test(
   "production HTTP routes: public pages, enquiry lifecycle, admin access, private upload and export",
   { timeout: 90000 },
   async () => {
-    const origin = "http://127.0.0.1:3100";
+    const reservation = createServer();
+    await new Promise<void>((resolve, reject) => {
+      reservation.once("error", reject);
+      reservation.listen(0, "127.0.0.1", resolve);
+    });
+    const address = reservation.address();
+    if (!address || typeof address === "string")
+      throw new Error("No test port");
+    const port = String(address.port);
+    await new Promise<void>((resolve) => reservation.close(() => resolve()));
+    const origin = `http://127.0.0.1:${port}`;
     const token = randomBytes(32).toString("hex");
     const child = spawn(
       process.execPath,
@@ -18,7 +29,7 @@ test(
         "node_modules/next/dist/bin/next",
         "start",
         "--port",
-        "3100",
+        port,
         "--hostname",
         "127.0.0.1",
       ],
@@ -36,6 +47,9 @@ test(
           MAIL_FROM: "",
           ADMIN_EMAIL: "",
           TURNSTILE_SECRET_KEY: "",
+          CMS_INTERNAL_URL: "",
+          CMS_REQUIRED: "false",
+          TRUST_PROXY: "true",
           NEXT_PUBLIC_SITE_URL: origin,
           ADMIN_TOKEN: token,
           RGI_DATA_DIR: mkdtempSync(join(tmpdir(), "rgi-http-")),
@@ -53,6 +67,8 @@ test(
     try {
       let ready = false;
       for (let i = 0; i < 80; i++) {
+        if (child.exitCode !== null)
+          throw new Error(`Test server exited: ${logs}`);
         try {
           const r = await fetch(origin);
           if (r.status === 200) {
@@ -78,7 +94,8 @@ test(
         "/contact",
         "/collaborate?type=Competition+Sponsorship",
         "/documents/privacy",
-        "/admin",
+        "/enquiries-admin",
+        "/blog",
         "/sitemap.xml",
         "/robots.txt",
       ]) {
@@ -86,6 +103,32 @@ test(
         assert.equal(r.status, 200, route);
       }
       const homepage = await (await fetch(origin)).text();
+      const admin = await fetch(origin + "/admin", { redirect: "manual" });
+      assert.equal(admin.status, 307);
+      assert.equal(
+        new URL(admin.headers.get("location")!, origin).pathname,
+        "/cms-admin/",
+      );
+      const removedRefund = await fetch(origin + "/documents/refund");
+      assert.ok([200, 404].includes(removedRefund.status));
+      assert.match(await removedRefund.text(), /noindex/);
+      assert.doesNotMatch(homepage, /Refund Policy/);
+      assert.match(homepage, /RGI Blog/);
+      for (let i = 0; i < 20; i++) {
+        const limited = await fetch(origin + "/api/enquiries", {
+          method: "POST",
+          headers: { origin, "x-rgi-client-ip": "192.0.2.91" },
+          body: "invalid body",
+        });
+        assert.notEqual(limited.status, 429);
+      }
+      const limited = await fetch(origin + "/api/enquiries", {
+        method: "POST",
+        headers: { origin, "x-rgi-client-ip": "192.0.2.91" },
+        body: "invalid body",
+      });
+      assert.equal(limited.status, 429);
+      assert.equal(limited.headers.get("retry-after"), "600");
       const gate = homepage.indexOf('id="intro-boot"');
       assert.ok(
         gate > 0 && gate < homepage.indexOf("</head>"),
@@ -126,7 +169,9 @@ test(
       const contactPage = await (await fetch(origin + "/contact")).text();
       assert.match(contactPage, /robo-goal-india-logo-dark/);
       assert.match(contactPage, /robotic-sir-logo-dark/);
-      assert.equal((await fetch(origin + "/events/not-published")).status, 404);
+      const missingEvent = await fetch(origin + "/events/not-published");
+      assert.ok([200, 404].includes(missingEvent.status));
+      assert.match(await missingEvent.text(), /noindex/);
       assert.equal((await fetch(origin + "/api/admin/requests")).status, 401);
       const id = randomUUID();
       function form() {

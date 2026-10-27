@@ -11,13 +11,22 @@ import {
   INTRO_LOGO_PIECES,
 } from "../src/lib/intro-config";
 
-function boot(pathname = "/", reducedMotion = false) {
+function boot(
+  pathname = "/",
+  reducedMotion = false,
+  seen = false,
+  back = false,
+) {
   const dataset: Record<string, string> = {};
   const timers: (() => void)[] = [];
   runInNewContext(INTRO_BOOT_SCRIPT, {
     document: { documentElement: { dataset } },
     location: { pathname },
     matchMedia: () => ({ matches: reducedMotion }),
+    sessionStorage: { getItem: () => (seen ? "1" : null), setItem: () => {} },
+    performance: {
+      getEntriesByType: () => [{ type: back ? "back_forward" : "navigate" }],
+    },
     setTimeout: (callback: () => void) => timers.push(callback),
   });
   return { dataset, timers };
@@ -37,7 +46,12 @@ test("homepage is gated synchronously before hydration, with a failure escape", 
 });
 
 test("other pages and reduced-motion users are not gated", () => {
-  for (const result of [boot("/contact"), boot("/", true)]) {
+  for (const result of [
+    boot("/contact"),
+    boot("/", true),
+    boot("/", false, true),
+    boot("/", false, false, true),
+  ]) {
     assert.equal(result.dataset.intro, undefined);
     assert.equal(result.timers.length, 0);
   }

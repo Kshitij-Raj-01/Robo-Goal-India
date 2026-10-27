@@ -1,7 +1,7 @@
 /** Runs in the document head, before the navbar or homepage can be painted. */
-export const INTRO_BOOT_SCRIPT = `(function(){try{if(location.pathname!=="/"||matchMedia("(prefers-reduced-motion: reduce)").matches)return;document.documentElement.dataset.intro="pending";setTimeout(function(){if(document.documentElement.dataset.intro==="pending")delete document.documentElement.dataset.intro},22000)}catch(e){}})();`;
+export const INTRO_BOOT_SCRIPT = `(function(){try{if(location.pathname!=="/"||matchMedia("(prefers-reduced-motion: reduce)").matches||sessionStorage.getItem("rgi-intro-seen")==="1"||performance.getEntriesByType("navigation")[0]?.type==="back_forward")return;sessionStorage.setItem("rgi-intro-seen","1");document.documentElement.dataset.intro="pending";setTimeout(function(){if(document.documentElement.dataset.intro==="pending")delete document.documentElement.dataset.intro},26000)}catch(e){}})();`;
 
-export const INTRO_CRITICAL_CSS = `html[data-intro="pending"] body{background:#030910}html[data-intro="pending"] .navbar,html[data-intro="pending"] .skip-link,html[data-intro="pending"] footer,html[data-intro="pending"] #main>:not(.intro){visibility:hidden}html[data-intro] body{overflow:hidden}.intro{position:fixed;inset:0;z-index:2147483000;background:#030910;overflow:hidden}.intro-revealing{background:transparent}`;
+export const INTRO_CRITICAL_CSS = `html:not([data-intro]) .intro{display:none}html[data-intro="pending"] body{background:#030910}html[data-intro="pending"] .navbar,html[data-intro="pending"] .skip-link,html[data-intro="pending"] footer,html[data-intro="pending"] #main>:not(.intro){visibility:hidden}html[data-intro] body{overflow:hidden}.intro{position:fixed;inset:0;z-index:2147483000;background:#030910;overflow:hidden}.intro-revealing{background:transparent}`;
 
 export const INTRO_PREPARATION_TIMEOUT_MS = 8000;
 export const INTRO_PLAYBACK_TIMEOUT_MS = 16000;

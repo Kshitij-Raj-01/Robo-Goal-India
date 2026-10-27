@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { PageHero, Button } from "@/components/ui";
 import { site } from "@/lib/content";
+import { getContent } from "@/lib/cms";
 export const metadata: Metadata = {
   title: "Contact",
   alternates: { canonical: "/contact" },
@@ -13,7 +14,8 @@ const categories = [
   ["Media Enquiry", "Media Partnership"],
   ["General Enquiry", "General Enquiry"],
 ];
-export default function Contact() {
+export default async function Contact() {
+  const { site } = await getContent();
   return (
     <>
       <PageHero

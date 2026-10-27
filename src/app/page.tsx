@@ -27,7 +27,9 @@ import {
   Stats,
 } from "@/components/experience";
 import { Intro } from "@/components/intro";
-export default function Home() {
+import { getContent } from "@/lib/cms";
+export default async function Home() {
+  const { site, statistics } = await getContent();
   return (
     <>
       <Intro />
@@ -54,7 +56,7 @@ export default function Home() {
             <em>CONQUER.</em>
           </h1>
           <p>
-            Robo Goal India brings students, schools, universities and
+            Robo Goal India (RGI) brings students, schools, universities and
             technology communities together through high-energy robotic soccer
             and racing competitions across India.
           </p>
@@ -134,6 +136,7 @@ export default function Home() {
             </span>
           </Link>
           <Link href="/tour#race" className="discipline race">
+            <div className="discipline-photo race-photo" />
             <div className="race-track" />
             <span className="micro">02 / SPEED. CONTROL. INNOVATION.</span>
             <div>

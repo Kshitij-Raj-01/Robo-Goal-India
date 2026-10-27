@@ -28,6 +28,7 @@ import {
   type Team,
 } from "@/lib/content";
 import { EmptyState, Button } from "./ui";
+import { useContent } from "./content-provider";
 
 export function HeroAtmosphere() {
   const ref = useRef<HTMLDivElement>(null);
@@ -54,6 +55,7 @@ export function HeroAtmosphere() {
 }
 
 function RouteRobot() {
+  const { fixtures } = useContent();
   const ref = useRef<SVGGElement>(null);
   useEffect(() => {
     if (
@@ -313,6 +315,7 @@ export function TourJourney({ compact = false }: { compact?: boolean }) {
   );
 }
 export function FixtureMap({ compact = false }: { compact?: boolean }) {
+  const { fixtures } = useContent();
   const [selected, setSelected] = useState<string | null>(null);
   const f =
     fixtures.find((f) => f.id === selected) ||
@@ -512,6 +515,7 @@ export function Countdown({ date }: { date: string | null }) {
   );
 }
 export function EventBrowser({ compact = false }: { compact?: boolean }) {
+  const { events } = useContent();
   const [filters, setFilters] = useState({
     year: "All years",
     city: "All cities",
@@ -587,6 +591,7 @@ export function EventBrowser({ compact = false }: { compact?: boolean }) {
               {e.cover && (
                 <Image
                   src={e.cover}
+                  unoptimized={e.cover.startsWith("/media/")}
                   width={700}
                   height={450}
                   alt={e.title}
@@ -648,6 +653,7 @@ export function EventBrowser({ compact = false }: { compact?: boolean }) {
   );
 }
 export function GalleryBrowser({ compact = false }: { compact?: boolean }) {
+  const { media } = useContent();
   const [filter, setFilter] = useState("All");
   const [selected, setSelected] = useState<Media | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
@@ -683,6 +689,7 @@ export function GalleryBrowser({ compact = false }: { compact?: boolean }) {
               {m.type === "image" ? (
                 <Image
                   src={m.src}
+                  unoptimized={m.src.startsWith("/media/")}
                   width={m.width}
                   height={m.height}
                   alt={m.alt}
@@ -737,6 +744,7 @@ export function GalleryBrowser({ compact = false }: { compact?: boolean }) {
             {selected.type === "image" ? (
               <Image
                 src={selected.src}
+                unoptimized={selected.src.startsWith("/media/")}
                 alt={selected.alt}
                 width={selected.width}
                 height={selected.height}

@@ -1,0 +1,41 @@
+name: Verify RGI
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-bookworm
+        env:
+          POSTGRES_PASSWORD: test-only
+          POSTGRES_USER: rgi
+          POSTGRES_DB: rgi_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U rgi -d rgi_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+      - run: npm ci
+      - run: python -m pip install -r backend/requirements.txt
+      - name: Django PostgreSQL migrations, image/admin/security tests
+        run: python backend/manage.py test cms
+        env:
+          DJANGO_DEBUG: 'true'
+          DJANGO_SECRET_KEY: ci-test-only-not-a-deployment-secret-abcdefg123456
+          DATABASE_URL: postgresql://rgi:test-only@127.0.0.1:5432/rgi_test
+      - run: npm test
+      - run: npm run typecheck
+      - run: npm run build
+      - run: npm run test:integration
+      - name: Real CMS-to-frontend rendering integration
+        run: python scripts/cms_integration.py

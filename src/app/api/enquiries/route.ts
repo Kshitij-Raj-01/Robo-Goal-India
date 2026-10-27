@@ -5,10 +5,11 @@ import {
   fieldErrors,
   validateAttachment,
 } from "@/lib/enquiry-schema";
-import { allowEmail, saveRequest, type Attachment } from "@/lib/database";
+import { allowRate, saveRequest, type Attachment } from "@/lib/database";
 import { deliverNotifications } from "@/lib/mail";
 import { boundedFormData, sameOrigin } from "@/lib/security";
 import { documents } from "@/lib/content";
+import { allowRequest } from "@/lib/rate-limit";
 export const runtime = "nodejs";
 export async function POST(request: Request) {
   if (!sameOrigin(request))
@@ -34,6 +35,14 @@ export async function POST(request: Request) {
       { status: 503 },
     );
   try {
+    if (!(await allowRequest(request)))
+      return Response.json(
+        { error: "Too many submissions. Please try again in 10 minutes." },
+        {
+          status: 429,
+          headers: { "Retry-After": "600", "Cache-Control": "no-store" },
+        },
+      );
     const form = await boundedFormData(request);
     if (form.get("companyFax"))
       return Response.json(
@@ -115,9 +124,9 @@ export async function POST(request: Request) {
       };
     }
     const rateKey = createHash("sha256")
-      .update(`${parsed.data.email}:${Math.floor(Date.now() / 3600000)}`)
+      .update(parsed.data.email)
       .digest("hex");
-    if (!(await allowEmail(rateKey)))
+    if (!(await allowRate(`form-email:${rateKey}`, 5, 3600)))
       return Response.json(
         { error: "Too many requests. Please try again in an hour." },
         { status: 429, headers: { "Retry-After": "3600" } },

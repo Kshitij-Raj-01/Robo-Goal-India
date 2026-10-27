@@ -23,7 +23,12 @@ export function Intro() {
         setVisible(false);
       }
     };
-    if (motion.matches) {
+    // Only the first document-head gate can authorize playback. Client navigation
+    // and history restoration must never insert an intro or mutate the history stack.
+    if (
+      motion.matches ||
+      document.documentElement.dataset.intro !== "pending"
+    ) {
       finish();
       return;
     }

@@ -38,3 +38,24 @@ export async function boundedFormData(request: Request) {
     headers: { "content-type": request.headers.get("content-type") || "" },
   }).formData();
 }
+export async function boundedJson(request: Request, limit = 30000) {
+  const reader = request.body?.getReader();
+  if (!reader) throw new Error("INVALID_JSON");
+  const chunks: Uint8Array[] = [];
+  let bytes = 0;
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    bytes += value.byteLength;
+    if (bytes > limit) {
+      await reader.cancel();
+      throw new Error("BODY_TOO_LARGE");
+    }
+    chunks.push(value);
+  }
+  try {
+    return JSON.parse(Buffer.concat(chunks).toString("utf8")) as unknown;
+  } catch {
+    throw new Error("INVALID_JSON");
+  }
+}

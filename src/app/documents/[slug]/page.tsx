@@ -40,7 +40,11 @@ export default async function Document({
         <span className="status-tag">
           {doc.published ? "Published" : "Publication pending"}
         </span>
-        <p>{doc.body}</p>
+        {doc.body.split("\n\n").map((paragraph, index) => (
+          <p key={index} style={{ whiteSpace: "pre-line" }}>
+            {paragraph}
+          </p>
+        ))}
         <Button href="/contact" secondary>
           Contact the Organizer
         </Button>
